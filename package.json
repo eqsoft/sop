@@ -1,0 +1,9 @@
+{
+  "name": "sop",
+  "fullName": "SCORM-Offline-Player",
+  "id": "f23bee90-c208-4dba-b923-173940c32bd9",
+  "description": "SCORM Offline Player",
+  "author": "schneider@hrz.uni-marburg.de",
+  "license": "MPL 2.0",
+  "version": "0.1"
+}

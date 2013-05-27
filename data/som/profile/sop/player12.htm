@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>SCORM Offline Player</title>
+	<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+	<script type="text/javascript" src="../Modules/ScormAicc/scripts/SOP12API.js"></script>
+	<style type="text/css">
+body{
+	margin:0;
+}
+#zmove{
+	background: url(images/transparent.gif) 0 0 repeat;
+	position:absolute;
+	width:100%;
+	height:100%;
+	z-index:7;
+	display:none;
+}
+#leftView{
+	width:230px;
+	position:absolute;
+	float:left;
+	top:30px;
+	bottom:0;
+}
+div.dragbar{
+	background-color:#D0D0D0;
+	z-index:8;
+	width:2px;
+	cursor:col-resize;
+	position:absolute;
+	top:30px;
+	bottom:0px;
+	left:230px;
+}
+#tdResource{
+	float:right;
+	position:absolute;
+	right:0;
+	top:30px;
+	bottom:0px;
+	left:232px;
+}
+	</style>
+</head>
+<body>
+	<div id="zmove"></div>
+	<div id="toolbar">
+		<a href="resource://f23bee90-c208-4dba-b923-173940c32bd9-at-jetpack/sop/data/som/som.html">SOM-Home</a> 
+		<span id="lmTitle"></span> 
+		Status: <span id="lmStatus"></span>
+	</div>
+	<div id="mainTable">
+		<div id="leftView">
+			<div id="treeView"></div>
+		</div>
+		<div id="dragbar"></div>
+		<div id="tdResource">
+			<iframe src="../Modules/ScormAicc/templates/default/dummy.html" name="sahs_content" style="width:100%;height:100%" frameborder="0"></iframe>
+			<iframe src="../Modules/ScormAicc/templates/default/debug.html" name="logframe" style="width:100%;height:0" frameborder="0"></iframe>
+		</div>
+	</div>
+
+	
+	<script type="text/javascript">
+		somInitialized=false;
+		IliasScormVars={};
+		IliasScormData={};
+		IliasScormResources=[];
+		var SOP=true;
+		var API;
+		var params;
+
+		function initPlayer() {
+			if (somInitialized!=true){
+				setTimeout("initPlayer()",100);
+			} else {
+				params = getObj(gui.getPlayerParams());
+				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjId",[params.client,params.obj_id],true));
+				document.getElementById("lmTitle").innerHTML=d[0].title;
+				document.getElementById("lmStatus").innerHTML=d[0].status;
+				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
+				if(d[0].init_data && d[0].init_data!="")
+				{
+					IliasScormVars=JSON.parse(d[0].init_data);
+					IliasScormData=JSON.parse(d[0].user_data);
+					IliasScormResources=JSON.parse(d[0].resources);
+					if (IliasScormResources.length==1){
+						document.getElementById("leftView").style.width="0";
+						document.getElementById("dragbar").style.left="0";
+						document.getElementById("tdResource").style.left="0";
+					}
+					IliasScormVars.b_debug=true;
+					if (IliasScormVars.b_debug==true) {
+						document.getElementsByName("sahs_content")[0].style.height="70%";
+						document.getElementsByName("logframe")[0].style.height="30%";
+					}
+					API=new iliasApi();
+				} else {
+					document.getElementById("tdResource").innerHTML="error reading data";
+				}
+			}
+		}
+
+		function initSom() {
+			somInitialized=true;
+			initPlayer();
+			//somInitialized=true;
+		}
+		function getObj(str) {
+			return JSON.parse(str);
+		}
+		window.addEventListener("load",initSom,true);
+		//window.addEventListener("load",initSom,true);
+		//initPlayer();
+	</script>
+</body>
+</html>
