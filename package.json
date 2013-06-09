@@ -5,5 +5,34 @@
   "description": "SCORM Offline Player",
   "author": "schneider@hrz.uni-marburg.de",
   "license": "MPL 2.0",
-  "version": "0.1"
+  "version": "0.1",
+  "preferences" : 
+	[{
+		"description": "Autostart SCORM-Offline-Manager",
+		"type": "bool",
+		"name": "autoStart",
+		"value": true,
+		"title": "Autostart SOM"
+	},
+	{
+		"description": "Pin SCORM-Offline-Manager Tab",
+		"type": "bool",
+		"name": "pinTab",
+		"value": false,
+		"title": "Pin SOM Tab"
+	},
+	{
+		"description": "Start SCORM-Offline-Manager",
+		"type": "control",
+		"label": "Start SOM",
+		"name": "startSOM",
+		"title": "Start SOM"
+	},
+	{
+		"description": "Stop SCORM-Offline-Manager",
+		"type": "control",
+		"label": "Stop SOM",
+		"name": "stopSOM",
+		"title": "Stop SOM"
+	}]
 }

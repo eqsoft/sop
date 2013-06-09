@@ -78,7 +78,7 @@ div.dragbar{
 			if (somInitialized!=true){
 				setTimeout("initPlayer()",100);
 			} else {
-				params = getObj(gui.getPlayerParams());
+				params = getObj(gui.getPlayerParams(window));
 				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjId",[params.client,params.obj_id],true));
 				document.getElementById("lmTitle").innerHTML=d[0].title;
 				document.getElementById("lmStatus").innerHTML=d[0].status;

@@ -1,6 +1,6 @@
 SCORM-Offline-Player
 ====================
-SCORM-Offline-Player as Firefox Addon
+SCORM-Offline-Player based on a firefox add-on. 
 
 ## OS Support ##
 * Windows 32/64Bit
