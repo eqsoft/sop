@@ -34,5 +34,12 @@
 		"label": "Stop SOM",
 		"name": "stopSOM",
 		"title": "Stop SOM"
+	},
+	{
+		"description": "Reset to Factory Data",
+		"type": "control",
+		"label": "Reset to Factory Data",
+		"name": "resetSOM",
+		"title": "Reset SOM"
 	}]
 }
