@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>gui.js</title>
+    <title>gui.js - The SCORM-Offline-Player API</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -15,11 +15,11 @@
     <div id="hd" class="yui3-g header">
         <div class="yui3-u-3-4">
             
-                <h1><img src="../assets/css/logo.png" title=""></h1>
+                <h1><img src="../assets/css/logo.png" title="The SCORM-Offline-Player API"></h1>
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: </em>
+            <em>API Docs for: 0.1</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -110,11 +110,11 @@ module.metadata = {
 const {Cc, Ci, Cu, Cr, Cm} = require(&quot;chrome&quot;);
 /**
  * @public
- * @event on
+ * @method on
  **/
 /**
  * @public
- * @event once
+ * @method once
  **/
 /**
  * @public
@@ -136,12 +136,9 @@ exports.__exposedProps__ = {
  */
  
 var data = require(&#x27;self&#x27;).data;
-var system = require(&quot;sdk/system&quot;);
 var windows = require(&quot;sdk/windows&quot;).browserWindows;
 var winutils = require(&#x27;sdk/window/utils&#x27;);
 var tabs = require(&quot;sdk/tabs&quot;);
-//var tabutils = require(&quot;sdk/tabs/utils&quot;);
-var file = require(&quot;sdk/io/file&quot;);
 var net = require(&quot;sdk/net/url&quot;);
 
 /** 
@@ -158,7 +155,7 @@ var mw = null; // unwrapped manager window (only one instance)
 
 var ps = {}; // player instances
 
-var mts = { lms : &quot;&quot;, lm : &quot;&quot;} 	// manager templates, must be manually registered: see data/som/templates/manager/*.html
+var mts = { lms : &quot;&quot;, lm : &quot;&quot; } 	// manager templates, must be manually registered: see data/som/templates/manager/*.html
 var pts = {}; 			// player templates, must be manually registered: see data/som/templates/player/*.html
 
 main.on(&quot;startup&quot;, startup );
@@ -177,6 +174,11 @@ som.on(&quot;lmChanged&quot;,renderLm);
 const maxReloadTries = 5;
 var reloadTries = 0;
 
+/**
+ * EventListener for startup event, will open a som tab if prefs.autoStart is set 
+ * @private
+ * @method startup
+ **/ 
 function startup() {
 	if (prefs.autoStart) {
 		utils.log(&quot;gui startup&quot;);
@@ -188,8 +190,14 @@ function startup() {
 	}
 }
 
-function downgrade(load=false) {
-	if (!load) { // comes from unload
+/**
+ * EventListener for downgrade event, will stop the environment components in an unload context 
+ * and in a load context will shutdown all existing player and manager tabs and trigger a new startup()  
+ * @private
+ * @method downgrade
+ **/
+function downgrade(load=false) { // needs to be tested on Android!
+	if (!load) { // fired from unload
 		try {
 			env.stop();
 		}
@@ -197,9 +205,9 @@ function downgrade(load=false) {
 			utils.err(e);
 		}
 	}
-	else { // comes from new install
+	else { // fired from new install
 		var windows = require(&quot;sdk/windows&quot;).browserWindows;
-		// this will stop rte env!
+		// this will stop env running!
 		for each (var tab in windows.activeWindow.tabs) {
 			if (tab.title == env.globals.managerTitle || tab.title == env.globals.playerTitle) {
 				utils.log(&quot;close tab &quot; + tab.title);
@@ -210,6 +218,14 @@ function downgrade(load=false) {
 	}
 }
 
+/**
+ * Triggered on tabs.on(&quot;open&quot;) event.
+ * Checks if the window title is a player or manager title and initializes the component.
+ * The method ensures, that the environment runs and only one manager tab and only one learning module instance is running.
+ * @private
+ * @method init
+ * @param {Object} tab    
+ **/ 
 function init(tab) {
 	utils.log(&quot;init gui&quot;);
 	switch (tab.title) {
@@ -242,6 +258,14 @@ function init(tab) {
 	}
 }
 
+/**
+ * Triggered on tabs.on(&quot;open&quot;) event and window.title = managerTitle. 
+ * Injects the necessary communication objects and gui scripts to the content.
+ * Adds load and unload EventListeners to the DOMDocument. 
+ * @private
+ * @method initManager
+ * @param {Object} tab    
+ **/ 
 function initManager(tab) {
 	utils.log(&quot;init manager&quot;);
 	mtab = tab;
@@ -262,6 +286,14 @@ function initManager(tab) {
 	var mworker = tab.attach( { &#x27;contentScriptFile&#x27; : [jq,bs] }); 
 }
 
+/**
+ * Triggered on tabs.on(&quot;open&quot;) event and window.title = playerTitle. 
+ * Injects the necessary communication objects and gui scripts to the content. 
+ * Adds load and unload EventListeners to the DOMDocument. 
+ * @private
+ * @method initPlayer
+ * @param {Object} tab    
+ **/ 
 function initPlayer(tab) {
 	utils.log(&quot;init player&quot;);
 	if (reloadTries === maxReloadTries) {
@@ -304,6 +336,7 @@ function initPlayer(tab) {
 	}
 	getPlayerTemplates(); 
 }
+
 
 function openSomTab() {
 	var url = data.url(&quot;som/som.html&quot;);
@@ -598,10 +631,6 @@ var playerFuncs = {
 
 /* late binding of exports and exposed props */
 exports.getParams = getParams;
-exports.getMTab = getMTab;
-exports.getPs = getPs;
-exports.activateManager = activateManager;
-exports.activatePlayer = activatePlayer;
 
     </pre>
 </div>

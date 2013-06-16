@@ -1,0 +1,9 @@
+{
+    "name": "The SCORM-Offline-Player API",
+    "description": "The SCORM-Offline-Player API: a Firefox extension for running SCORM-Courses offline ",
+    "version": "0.1",
+    "url": "https://github.com/eqsoft",
+    "options": {
+        "outdir": "../apidoc"
+    }
+}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>main</title>
+    <title>main - The SCORM-Offline-Player API</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -15,11 +15,11 @@
     <div id="hd" class="yui3-g header">
         <div class="yui3-u-3-4">
             
-                <h1><img src="../assets/css/logo.png" title=""></h1>
+                <h1><img src="../assets/css/logo.png" title="The SCORM-Offline-Player API"></h1>
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: </em>
+            <em>API Docs for: 0.1</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -154,6 +154,20 @@ Therefore all other classes (env, som, gui, db, utils) needs to be included insi
                             </li>
                         
                             <li class="index-item method public">
+                                <a href="#method_on">on</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method public">
+                                <a href="#method_once">once</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method public">
                                 <a href="#method_removeListener">removeListener</a>
 
                                 
@@ -181,15 +195,57 @@ Therefore all other classes (env, som, gui, db, utils) needs to be included insi
 
                     <ul class="index-list events">
                         
-                            <li class="index-item event public">
-                                <a href="#event_on">on</a>
+                            <li class="index-item event">
+                                <a href="#event_disable">disable</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item event public">
-                                <a href="#event_once">once</a>
+                            <li class="index-item event">
+                                <a href="#event_downgrade">downgrade</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_enable">enable</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_install">install</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_shutdown">shutdown</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_startup">startup</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_uninstall">uninstall</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_upgrade">upgrade</a>
 
                                 
                                 
@@ -253,7 +309,7 @@ Therefore all other classes (env, som, gui, db, utils) needs to be included insi
             
         
         
-        <a href="../files/main.js.html#l46"><code>main.js:46</code></a>
+        <a href="../files/main.js.html#l74"><code>main.js:74</code></a>
         
         </p>
 
@@ -265,21 +321,7 @@ Therefore all other classes (env, som, gui, db, utils) needs to be included insi
 
     <div class="description">
         <p>The main function is executed after all required classes and all the other main.js code evaluation.
-The option.loadReason events are emitted for other classes adding listeners like main.on("startup") or main.on("install").
-The event reasons "upgrade" and "downgrade" may be fired on loading and unloading the addon. 
-Therefore a load=true argument is added to the emit call.</p>
-
-<p>possible loadReasons:</p>
-
-<p>install</p>
-
-<p>enable</p>
-
-<p>startup</p>
-
-<p>upgrade</p>
-
-<p>downgrade</p>
+The option.loadReason events are emitted for other classes adding listeners like main.on("startup") or main.on("install").</p>
 
 <p>see also: <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html" target="_new">https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html</a></p>
     </div>
@@ -334,6 +376,118 @@ Therefore a load=true argument is added to the emit call.</p>
                 <p>main.on("startup", function(){ //do something }; )</p><p>main.on("downgrade", function(load){ if (load === true) { //do something }; })</p>
             </div>
         </div>
+    
+</div>
+
+                
+                    <div id="method_on" class="method item public">
+    <h3 class="name"><code>on</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag public">public</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/main.js.html#l17"><code>main.js:17</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_once" class="method item public">
+    <h3 class="name"><code>once</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag public">public</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/main.js.html#l21"><code>main.js:21</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
     
 </div>
 
@@ -436,7 +590,7 @@ Therefore a load=true argument is added to the emit call.</p>
             
         
         
-        <a href="../files/main.js.html#l80"><code>main.js:80</code></a>
+        <a href="../files/main.js.html#l93"><code>main.js:93</code></a>
         
         </p>
 
@@ -448,21 +602,7 @@ Therefore a load=true argument is added to the emit call.</p>
 
     <div class="description">
         <p>The unload function is executed on unloading the addon.
-All event reasons are emitted for other modules to add listeners like main.on("shutdown") or main.on("uninstall")) <br />
-The event reasons "upgrade" and "downgrade" may be fired on loading and unloading the addon. 
-Therefore a load=false argument is added to the emit call.</p>
-
-<p>possible reasons:</p>
-
-<p>uninstall</p>
-
-<p>disable</p>
-
-<p>shutdown</p>
-
-<p>upgrade</p>
-
-<p>downgrade</p>
+All event reasons are emitted for other modules to add listeners like main.on("shutdown") or main.on("uninstall"))  </p>
 
 <p>see also: <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html" target="_new">https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html</a></p>
     </div>
@@ -518,14 +658,12 @@ Therefore a load=false argument is added to the emit call.</p>
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_on" class="events item public">
-    <h3 class="name"><code>on</code></h3>
+                    <div id="event_disable" class="events item">
+    <h3 class="name"><code>disable</code></h3>
     <span class="type"></span>
 
     
 
-    
-        <span class="flag public">public</span>
     
 
     
@@ -543,7 +681,7 @@ Therefore a load=false argument is added to the emit call.</p>
             
         
         
-        <a href="../files/main.js.html#l17"><code>main.js:17</code></a>
+        <a href="../files/main.js.html#l58"><code>main.js:58</code></a>
         
         </p>
 
@@ -563,14 +701,12 @@ Therefore a load=false argument is added to the emit call.</p>
 </div>
 
                 
-                    <div id="event_once" class="events item public">
-    <h3 class="name"><code>once</code></h3>
+                    <div id="event_downgrade" class="events item">
+    <h3 class="name"><code>downgrade</code></h3>
     <span class="type"></span>
 
     
 
-    
-        <span class="flag public">public</span>
     
 
     
@@ -588,7 +724,51 @@ Therefore a load=false argument is added to the emit call.</p>
             
         
         
-        <a href="../files/main.js.html#l21"><code>main.js:21</code></a>
+        <a href="../files/main.js.html#l69"><code>main.js:69</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The event may be fired on loading and unloading the addon. 
+Therefore a load=true|false argument is added on event emitting.</p>
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_enable" class="events item">
+    <h3 class="name"><code>enable</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/main.js.html#l49"><code>main.js:49</code></a>
         
         </p>
 
@@ -599,6 +779,222 @@ Therefore a load=false argument is added to the emit call.</p>
 
     <div class="description">
         
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_install" class="events item">
+    <h3 class="name"><code>install</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/main.js.html#l46"><code>main.js:46</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_shutdown" class="events item">
+    <h3 class="name"><code>shutdown</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/main.js.html#l61"><code>main.js:61</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_startup" class="events item">
+    <h3 class="name"><code>startup</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/main.js.html#l52"><code>main.js:52</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_uninstall" class="events item">
+    <h3 class="name"><code>uninstall</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/main.js.html#l55"><code>main.js:55</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_upgrade" class="events item">
+    <h3 class="name"><code>upgrade</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/main.js.html#l64"><code>main.js:64</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The event may be fired on loading and unloading the addon. 
+Therefore a load=true|false argument is added added on event emitting.</p>
     </div>
 
     

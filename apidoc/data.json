@@ -1,5 +1,10 @@
 {
-    "project": {},
+    "project": {
+        "name": "The SCORM-Offline-Player API",
+        "description": "The SCORM-Offline-Player API: a Firefox extension for running SCORM-Courses offline ",
+        "version": "0.1",
+        "url": "https://github.com/eqsoft"
+    },
     "files": {
         "db.js": {
             "name": "db.js",
@@ -133,11 +138,127 @@
     },
     "classitems": [
         {
+            "file": "db.js",
+            "line": 13,
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "on",
+            "class": "db"
+        },
+        {
+            "file": "db.js",
+            "line": 17,
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "once",
+            "class": "db"
+        },
+        {
+            "file": "db.js",
+            "line": 21,
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "removeListener",
+            "class": "db"
+        },
+        {
+            "file": "db.js",
+            "line": 44,
+            "description": "opens the sqlite database sop.sqlite in the profile folder",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "openDb",
+            "class": "db"
+        },
+        {
+            "file": "db.js",
+            "line": 63,
+            "description": "closes the sqlite database sop.sqlite in the profile folder",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "closeDb",
+            "class": "db"
+        },
+        {
+            "file": "db.js",
+            "line": 76,
+            "description": "gets data from db",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "getData",
+            "params": [
+                {
+                    "name": "statement",
+                    "description": "the name of the statement",
+                    "type": "String"
+                },
+                {
+                    "name": "params",
+                    "description": "",
+                    "type": "Array"
+                },
+                {
+                    "name": "asJSONObject",
+                    "description": "",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "asRecordObject=true",
+                    "description": "",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "data",
+                "type": "Object||String"
+            },
+            "class": "db"
+        },
+        {
+            "file": "db.js",
+            "line": 115,
+            "itemtype": "event",
+            "name": "lmUserDataChanged",
+            "class": "db"
+        },
+        {
+            "file": "db.js",
+            "line": 118,
+            "description": "gets data from db",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "dbData",
+            "params": [
+                {
+                    "name": "statement",
+                    "description": "the name of the statement",
+                    "type": "String"
+                },
+                {
+                    "name": "params",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "success",
+                "type": "Boolean"
+            },
+            "class": "db"
+        },
+        {
             "file": "env.js",
             "line": 21,
             "access": "public",
             "tagname": "",
-            "itemtype": "event",
+            "itemtype": "method",
             "name": "on",
             "class": "env"
         },
@@ -146,7 +267,7 @@
             "line": 25,
             "access": "public",
             "tagname": "",
-            "itemtype": "event",
+            "itemtype": "method",
             "name": "once",
             "class": "env"
         },
@@ -196,7 +317,14 @@
         {
             "file": "env.js",
             "line": 146,
-            "description": "starts the environmnet components (io, db, server) and populates the profile\n\nemits a run event",
+            "itemtype": "event",
+            "name": "run",
+            "class": "env"
+        },
+        {
+            "file": "env.js",
+            "line": 149,
+            "description": "starts the environment components (io, db, server) and populates the profile\n\nemits a run event",
             "access": "public",
             "tagname": "",
             "itemtype": "method",
@@ -205,7 +333,7 @@
         },
         {
             "file": "env.js",
-            "line": 170,
+            "line": 173,
             "description": "initialize all necessary file and directory objects",
             "access": "public",
             "tagname": "",
@@ -215,7 +343,7 @@
         },
         {
             "file": "env.js",
-            "line": 205,
+            "line": 208,
             "description": "populates the profile folder with an initial db and a webserver root folder with the SCORM-Offline-Player files if not exists.",
             "access": "public",
             "tagname": "",
@@ -225,7 +353,7 @@
         },
         {
             "file": "env.js",
-            "line": 239,
+            "line": 242,
             "description": "deletes existing db and webroot in the profile folder",
             "access": "public",
             "tagname": "",
@@ -235,7 +363,7 @@
         },
         {
             "file": "env.js",
-            "line": 260,
+            "line": 263,
             "description": "stops the webserver closes the db and set the private running variable to false",
             "access": "public",
             "tagname": "",
@@ -245,19 +373,19 @@
         },
         {
             "file": "env.js",
-            "line": 278,
+            "line": 281,
             "description": "gui events",
             "class": "env"
         },
         {
             "file": "env.js",
-            "line": 315,
+            "line": 318,
             "description": "server",
             "class": "env"
         },
         {
             "file": "env.js",
-            "line": 351,
+            "line": 354,
             "description": "addon lifecycle events",
             "class": "env"
         },
@@ -266,7 +394,7 @@
             "line": 13,
             "access": "public",
             "tagname": "",
-            "itemtype": "event",
+            "itemtype": "method",
             "name": "on",
             "class": "gui"
         },
@@ -275,7 +403,7 @@
             "line": 17,
             "access": "public",
             "tagname": "",
-            "itemtype": "event",
+            "itemtype": "method",
             "name": "once",
             "class": "gui"
         },
@@ -296,49 +424,120 @@
         },
         {
             "file": "gui.js",
-            "line": 49,
+            "line": 46,
             "description": "custom modules and variables",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 245,
+            "line": 79,
+            "description": "EventListener for startup event, will open a som tab if prefs.autoStart is set",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "startup",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 95,
+            "description": "EventListener for downgrade event, will stop the environment components in an unload context \nand in a load context will shutdown all existing player and manager tabs and trigger a new startup()",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "downgrade",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 123,
+            "description": "Triggered on tabs.on(\"open\") event.\nChecks if the window title is a player or manager title and initializes the component.\nThe method ensures, that the environment runs and only one manager tab and only one learning module instance is running.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "tab",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 163,
+            "description": "Triggered on tabs.on(\"open\") event and window.title = managerTitle. \nInjects the necessary communication objects and gui scripts to the content.\nAdds load and unload EventListeners to the DOMDocument.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "initManager",
+            "params": [
+                {
+                    "name": "tab",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 191,
+            "description": "Triggered on tabs.on(\"open\") event and window.title = playerTitle. \nInjects the necessary communication objects and gui scripts to the content. \nAdds load and unload EventListeners to the DOMDocument.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "initPlayer",
+            "params": [
+                {
+                    "name": "tab",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 278,
             "description": "prefs events",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 274,
+            "line": 307,
             "description": "manager and player events",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 307,
+            "line": 340,
             "description": "window events",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 329,
+            "line": 362,
             "description": "tab events",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 350,
+            "line": 383,
             "description": "misc functions",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 395,
+            "line": 428,
             "description": "templates",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 469,
+            "line": 502,
             "description": "gui actions",
             "class": "gui"
         },
@@ -347,7 +546,7 @@
             "line": 17,
             "access": "public",
             "tagname": "",
-            "itemtype": "event",
+            "itemtype": "method",
             "name": "on",
             "class": "main"
         },
@@ -356,7 +555,7 @@
             "line": 21,
             "access": "public",
             "tagname": "",
-            "itemtype": "event",
+            "itemtype": "method",
             "name": "once",
             "class": "main"
         },
@@ -372,7 +571,65 @@
         {
             "file": "main.js",
             "line": 46,
-            "description": "The main function is executed after all required classes and all the other main.js code evaluation.\nThe option.loadReason events are emitted for other classes adding listeners like main.on(\"startup\") or main.on(\"install\").\nThe event reasons \"upgrade\" and \"downgrade\" may be fired on loading and unloading the addon. \nTherefore a load=true argument is added to the emit call.\n \npossible loadReasons:\n\ninstall\n\nenable\n\nstartup\n\nupgrade\n\ndowngrade\n\nsee also: <a href=\"https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html\" target=\"_new\">https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html</a>",
+            "itemtype": "event",
+            "name": "install",
+            "class": "main"
+        },
+        {
+            "file": "main.js",
+            "line": 49,
+            "itemtype": "event",
+            "name": "enable",
+            "class": "main"
+        },
+        {
+            "file": "main.js",
+            "line": 52,
+            "itemtype": "event",
+            "name": "startup",
+            "class": "main"
+        },
+        {
+            "file": "main.js",
+            "line": 55,
+            "itemtype": "event",
+            "name": "uninstall",
+            "class": "main"
+        },
+        {
+            "file": "main.js",
+            "line": 58,
+            "itemtype": "event",
+            "name": "disable",
+            "class": "main"
+        },
+        {
+            "file": "main.js",
+            "line": 61,
+            "itemtype": "event",
+            "name": "shutdown",
+            "class": "main"
+        },
+        {
+            "file": "main.js",
+            "line": 64,
+            "description": "The event may be fired on loading and unloading the addon. \nTherefore a load=true|false argument is added added on event emitting.",
+            "itemtype": "event",
+            "name": "upgrade",
+            "class": "main"
+        },
+        {
+            "file": "main.js",
+            "line": 69,
+            "description": "The event may be fired on loading and unloading the addon. \nTherefore a load=true|false argument is added on event emitting.",
+            "itemtype": "event",
+            "name": "downgrade",
+            "class": "main"
+        },
+        {
+            "file": "main.js",
+            "line": 74,
+            "description": "The main function is executed after all required classes and all the other main.js code evaluation.\nThe option.loadReason events are emitted for other classes adding listeners like main.on(\"startup\") or main.on(\"install\").\n\nsee also: <a href=\"https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html\" target=\"_new\">https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html</a>",
             "itemtype": "method",
             "name": "main",
             "example": [
@@ -395,8 +652,8 @@
         },
         {
             "file": "main.js",
-            "line": 80,
-            "description": "The unload function is executed on unloading the addon.\nAll event reasons are emitted for other modules to add listeners like main.on(\"shutdown\") or main.on(\"uninstall\"))  \nThe event reasons \"upgrade\" and \"downgrade\" may be fired on loading and unloading the addon. \nTherefore a load=false argument is added to the emit call.\n\npossible reasons:\n\nuninstall\n\ndisable\n\nshutdown\n\nupgrade\n\ndowngrade\n\nsee also: <a href=\"https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html\" target=\"_new\">https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html</a>",
+            "line": 93,
+            "description": "The unload function is executed on unloading the addon.\nAll event reasons are emitted for other modules to add listeners like main.on(\"shutdown\") or main.on(\"uninstall\"))  \n\nsee also: <a href=\"https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html\" target=\"_new\">https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/load-and-unload.html</a>",
             "itemtype": "method",
             "name": "unload",
             "example": [
@@ -417,7 +674,7 @@
             "line": 16,
             "access": "public",
             "tagname": "",
-            "itemtype": "event",
+            "itemtype": "method",
             "name": "on",
             "class": "som"
         },
@@ -426,7 +683,7 @@
             "line": 20,
             "access": "public",
             "tagname": "",
-            "itemtype": "event",
+            "itemtype": "method",
             "name": "once",
             "class": "som"
         },
@@ -442,7 +699,14 @@
         {
             "file": "som.js",
             "line": 46,
-            "description": "gets all imported Learning-Modules (SCORM-Courses) from db\n\nemits event \"allLmChanged\"",
+            "itemtype": "event",
+            "name": "allLmChanged",
+            "class": "som"
+        },
+        {
+            "file": "som.js",
+            "line": 49,
+            "description": "gets all imported Learning-Modules (SCORM-Courses) from db",
             "access": "public",
             "tagname": "",
             "itemtype": "method",
@@ -455,8 +719,15 @@
         },
         {
             "file": "som.js",
-            "line": 67,
-            "description": "gets a Learning-Module by id from db or a row param\n\nemits event \"lmChanged\"",
+            "line": 68,
+            "itemtype": "event",
+            "name": "lmChanged",
+            "class": "som"
+        },
+        {
+            "file": "som.js",
+            "line": 71,
+            "description": "gets a Learning-Module by id from db or a row param",
             "access": "public",
             "tagname": "",
             "itemtype": "method",
@@ -481,7 +752,7 @@
         },
         {
             "file": "som.js",
-            "line": 115,
+            "line": 117,
             "description": "returns the Learning-Modules Object",
             "access": "public",
             "tagname": "",
@@ -519,15 +790,15 @@
     "warnings": [
         {
             "message": "Missing item type\ngui events",
-            "line": " env.js:278"
+            "line": " env.js:281"
         },
         {
             "message": "Missing item type\nserver",
-            "line": " env.js:315"
+            "line": " env.js:318"
         },
         {
             "message": "Missing item type\naddon lifecycle events",
-            "line": " env.js:351"
+            "line": " env.js:354"
         },
         {
             "message": "Missing item type\nsdk packages",
@@ -535,35 +806,35 @@
         },
         {
             "message": "Missing item type\ncustom modules and variables",
-            "line": " gui.js:49"
+            "line": " gui.js:46"
         },
         {
             "message": "Missing item type\nprefs events",
-            "line": " gui.js:245"
+            "line": " gui.js:278"
         },
         {
             "message": "Missing item type\nmanager and player events",
-            "line": " gui.js:274"
-        },
-        {
-            "message": "Missing item type\nwindow events",
             "line": " gui.js:307"
         },
         {
+            "message": "Missing item type\nwindow events",
+            "line": " gui.js:340"
+        },
+        {
             "message": "Missing item type\ntab events",
-            "line": " gui.js:329"
+            "line": " gui.js:362"
         },
         {
             "message": "Missing item type\nmisc functions",
-            "line": " gui.js:350"
+            "line": " gui.js:383"
         },
         {
             "message": "Missing item type\ntemplates",
-            "line": " gui.js:395"
+            "line": " gui.js:428"
         },
         {
             "message": "Missing item type\ngui actions",
-            "line": " gui.js:469"
+            "line": " gui.js:502"
         },
         {
             "message": "Missing item type\nzip functions",
