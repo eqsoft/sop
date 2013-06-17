@@ -316,14 +316,24 @@
         },
         {
             "file": "env.js",
-            "line": 146,
+            "line": 116,
+            "description": "HTTP Observer\nObserves browser network requests to sop webserver at localhost:serverPort.\nIf the browser requests a Learning-Module and the environment is not running, the observer starts the environment.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "property",
+            "name": "httpRequestObserver",
+            "class": "env"
+        },
+        {
+            "file": "env.js",
+            "line": 153,
             "itemtype": "event",
             "name": "run",
             "class": "env"
         },
         {
             "file": "env.js",
-            "line": 149,
+            "line": 156,
             "description": "starts the environment components (io, db, server) and populates the profile\n\nemits a run event",
             "access": "public",
             "tagname": "",
@@ -333,7 +343,7 @@
         },
         {
             "file": "env.js",
-            "line": 173,
+            "line": 180,
             "description": "initialize all necessary file and directory objects",
             "access": "public",
             "tagname": "",
@@ -343,7 +353,7 @@
         },
         {
             "file": "env.js",
-            "line": 208,
+            "line": 215,
             "description": "populates the profile folder with an initial db and a webserver root folder with the SCORM-Offline-Player files if not exists.",
             "access": "public",
             "tagname": "",
@@ -353,7 +363,7 @@
         },
         {
             "file": "env.js",
-            "line": 242,
+            "line": 249,
             "description": "deletes existing db and webroot in the profile folder",
             "access": "public",
             "tagname": "",
@@ -363,7 +373,7 @@
         },
         {
             "file": "env.js",
-            "line": 263,
+            "line": 270,
             "description": "stops the webserver closes the db and set the private running variable to false",
             "access": "public",
             "tagname": "",
@@ -373,19 +383,85 @@
         },
         {
             "file": "env.js",
-            "line": 281,
+            "line": 288,
             "description": "gui events",
             "class": "env"
         },
         {
             "file": "env.js",
-            "line": 318,
+            "line": 292,
+            "description": "unloads the player",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onPlayerUnload",
+            "class": "env"
+        },
+        {
+            "file": "env.js",
+            "line": 303,
+            "description": "unloads the manager",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onManagerUnload",
+            "class": "env"
+        },
+        {
+            "file": "env.js",
+            "line": 314,
+            "description": "base unload function for player and manager",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onUnload",
+            "class": "env"
+        },
+        {
+            "file": "env.js",
+            "line": 332,
+            "description": "checks if any player and manager instances are open, if not the environment will be stopped.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "checkRte",
+            "class": "env"
+        },
+        {
+            "file": "env.js",
+            "line": 349,
             "description": "server",
             "class": "env"
         },
         {
             "file": "env.js",
-            "line": 354,
+            "line": 352,
+            "description": "starts the internal webserver",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "startServer",
+            "params": [
+                {
+                    "name": "async=false",
+                    "description": ""
+                }
+            ],
+            "class": "env"
+        },
+        {
+            "file": "env.js",
+            "line": 383,
+            "description": "stops the internal webserver",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "stopServer",
+            "class": "env"
+        },
+        {
+            "file": "env.js",
+            "line": 397,
             "description": "addon lifecycle events",
             "class": "env"
         },
@@ -790,15 +866,15 @@
     "warnings": [
         {
             "message": "Missing item type\ngui events",
-            "line": " env.js:281"
+            "line": " env.js:288"
         },
         {
             "message": "Missing item type\nserver",
-            "line": " env.js:318"
+            "line": " env.js:349"
         },
         {
             "message": "Missing item type\naddon lifecycle events",
-            "line": " env.js:354"
+            "line": " env.js:397"
         },
         {
             "message": "Missing item type\nsdk packages",
