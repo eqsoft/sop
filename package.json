@@ -15,13 +15,6 @@
 		"title": "Autostart SOM"
 	},
 	{
-		"description": "Pin SCORM-Offline-Manager Tab",
-		"type": "bool",
-		"name": "pinTab",
-		"value": false,
-		"title": "Pin SOM Tab"
-	},
-	{
 		"description": "Start SCORM-Offline-Manager",
 		"type": "control",
 		"label": "Start SOM",
