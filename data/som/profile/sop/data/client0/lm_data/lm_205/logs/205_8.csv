@@ -1,0 +1,25 @@
+"CourseId";"ScoId";"ScoTitle";"Timestamp";"Action";"Key";"Value";"Return Value";"Errorcode";"Timespan";"ErrorDescription"
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:14;"Initialize";"";"";"true";0;3159;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:14;"GetLastError";"";"";"0";;3160;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:14;"GetValue";"cmi.suspend_data";"";"suspend";0;17573;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:14;"GetLastError";"";"";"0";;17573;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:14;"SetValue";"cmi.exit";"suspend";"true";0;34984;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:14;"GetLastError";"";"";"0";;34985;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SetValue";"cmi.suspend_data";"";"true";0;48708;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"GetLastError";"";"";"0";;48708;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"Terminate";"";"";"true";0;57747;""
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"cp_node_id";"4";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"completion_threshold";"0.8";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"c_exit";"suspend";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"completion_status";"unknown";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"progress_measure";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"success_status";"unknown";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"scaled";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"session_time";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"c_min";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"c_max";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"c_raw";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"location";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"suspend_data";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"scaled_passing_score";"";;;;
+205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"SQL";"total_time";"PT18.65S";;;;
