@@ -101,10 +101,10 @@
 		<script type="text/javascript" src="./Services/UIComponent/NestedList/js/ilNestedList.js"></script>
 
 		<script type="text/javascript" src="./Modules/Scorm2004/scripts/buildrte/rte.js"></script>
-		<script type="text/javascript" src="./Modules/Scorm2004/scripts/SopAddendum.js"></script>
 		<script type="text/javascript">
 		//<![CDATA[
 		somInitialized=false;
+		var SOP = true;
 		var params;
 		function initPlayer() {
 			if (somInitialized!=true){
@@ -114,7 +114,7 @@
 				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
 				var init_data=JSON.parse('{"cp_url":"","cmi_url":"","store_url":"","get_adldata_url":"","set_adldata_url":"","adlact_url":"","specialpage_url":"","suspend_url":"","get_suspend_url":"","gobjective_url":"","get_gobjective_url":"","ping_url":"","scorm_player_unload_url":"","scope":"null","learner_id":"6","course_id":"205","learner_name":"root user","mode":"normal","credit":"credit","auto_review":false,"hide_navig":false,"debug":false,"package_url":"\/data\/client0\/lm_data\/lm_205\/","session_ping":0,"envEditor":0,"post_log_url":"ilias.php?baseClass=ilSAHSPresentationGUI&cmd=postLogEntry&ref_id=50","livelog_url":"ilias.php?baseClass=ilSAHSPresentationGUI&cmd=liveLogContent&ref_id=50","debug_fields":["cmi.exit","cmi.session_time"],"debug_fields_test":["cmi.exit","cmi.session_time","cmi.score.scaled"],'+d[0].init_data+',"langstrings":{"btnStart":"Start","btnExit":"Exit","btnExitAll":"Exit All","btnSuspendAll":"Suspend All","btnPrevious":"Previous","btnContinue":"Continue","btnhidetree":"Hide Tree","btnshowtree":"Show Tree","linkexpandTree":"Expand All","linkcollapseTree":"Collapse All"}}');
 				init_cp_data=JSON.parse(d[0].resources);
-				
+				d=null;
 				var ret={
 				"schema":{},
 				"data":{
@@ -129,12 +129,19 @@
 				ret.schema={"package":["user_id","learner_name","slm_id","mode","credit"],"node":["accesscount","accessduration","accessed","activityAbsoluteDuration","activityAttemptCount","activityExperiencedDuration","activityProgressStatus","attemptAbsoluteDuration","attemptCompletionAmount","attemptCompletionStatus","attemptExperiencedDuration","attemptProgressStatus","audio_captioning","audio_level","availableChildren","cmi_node_id","completion","completion_status","completion_threshold","cp_node_id","created","credit","delivery_speed","entry","exit","language","launch_data","learner_name","location","max","min","mode","modified","progress_measure","raw","scaled","scaled_passing_score","session_time","success_status","suspend_data","total_time","user_id"],"comment":["cmi_comment_id","cmi_node_id","comment","timestamp","location","sourceIsLMS"],"correct_response":["cmi_correct_response_id","cmi_interaction_id","pattern"],"interaction":["cmi_interaction_id","cmi_node_id","description","id","latency","learner_response","result","timestamp","type","weighting"],"objective":["cmi_interaction_id","cmi_node_id","cmi_objective_id","completion_status","description","id","max","min","raw","scaled","progress_measure","success_status","scope"]};
 
 				ret.data.package=[["6","root user","205","normal","credit"]];//JSON.parse(gui.getData("lmGetAllCmiPackageByClientAndObjId",[params.client,params.obj_id],false));
-				ret.data.node=JSON.parse(gui.getData("lmGetAllCmiNodeByClientAndObjId",[params.client,params.obj_id],false));
+				d=JSON.parse(gui.getData("lmGetAllCmiNodeByClientAndObjId",[params.client,params.obj_id],false));
+				for(var i=0;i<d.length;i++){
+					if(d[i][36]==0) d[i][36]=null; //workaround
+					if(d[i][18]==0) d[i][18]=null; //workaround
+				}
+				ret.data.node=d;
+				d=null;
 				ret.data.comment=JSON.parse(gui.getData("lmGetAllCmiCommentByClientAndObjId",[params.client,params.obj_id],false));
 				ret.data.correct_response=JSON.parse(gui.getData("lmGetAllCmiCorrectResponseByClientAndObjId",[params.client,params.obj_id],false));
 				ret.data.interaction=JSON.parse(gui.getData("lmGetAllCmiInteractionByClientAndObjId",[params.client,params.obj_id],false));
 				ret.data.objective=JSON.parse(gui.getData("lmGetAllCmiObjectiveByClientAndObjId",[params.client,params.obj_id],false));
 				init_cmi_data=ret;
+				ret=null;
 				init_adlact_data=null;
 				init_globalobj_data=null;
 				scorm_init(init_data);
@@ -147,6 +154,28 @@
 		}
 		function getObj(str) {
 			return JSON.parse(str);
+		}
+
+		function saveRequest(data){
+			var additional_tables=data.node[0][41];
+			var storeNode=[];
+			storeNode[0]=params.client;
+			storeNode[1]=params.obj_id;
+			for(i=0;i<41;i++) {
+//				if(storeNode[i+2]==null) alert(i+2);
+				storeNode[i+2]=data.node[0][i];
+			}
+			storeNode[43]=data.p;
+			storeNode[44]="";//now
+			storeNode[45]=additional_tables;
+			var dbResult = gui.setData("lmSetAllCmiNodeByClientAndObjId",storeNode);
+			var status="trac_not_attempted", statusNum=data.now_global_status;
+			if(statusNum==1) status="trac_in_progress";
+			else if(statusNum==2) status="trac_completed";
+			else if(statusNum==3) status="trac_failed";
+			var dbResult = gui.setData("lmSetStatusByClientAndObjId",[params.client,params.obj_id,status]);
+			if (dbResult!=true) return "failure storing status";
+			return {"new_global_status":statusNum};
 		}
 		window.addEventListener("load",initSom,true);
 		//]]>
