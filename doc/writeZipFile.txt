@@ -1,0 +1,33 @@
+writezipfile(str_Buffer,str_Filename) {
+      try{
+         var obj_File = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+         obj_File.initWithPath(str_Filename);
+         if(!obj_File.exists())
+            obj_File.create(0x00,0644);
+      }
+      catch (e) { alert(e); }
+      try {
+         var obj_Transport = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+         obj_Transport.init( obj_File, 0x04 | 0x08 | 0x10, 064, 0 );
+         obj_Transport.write(str_Buffer,str_Buffer.length);
+         obj_Transport.close();
+      } catch (e) {
+         alert(e);
+      }
+   }
+
+
+// get the file and write it
+netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+var mget1 = new XMLHttpRequest();
+mget1.onload=function(){
+  if (mget1.status==200) {
+      writezipfile(mget1.responseText, "c:\\test.zip");
+   }
+   else
+   {
+      dump("status: " + mget1.status + " : " + mget1.statusText);
+   }
+}
+mget1.open("GET", "http://grc.com/files/sib.zip",false);
+mget1.send(null);
