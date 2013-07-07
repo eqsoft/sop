@@ -1,9 +1,62 @@
 
-var timeout = 5000;
-var sopFound = false;
-var counter = 0;
-var importContentUrl = "http://192.168.0.94/ilias/trunk/importLm.php";
+var importContentUrl = "http://localhost:81/ilias/trunk/importLm.php";
 
+function print(txt) {
+	var divOut = document.getElementById("out");
+	divOut.innerHTML = "";
+	divOut.innerHTML = txt;
+ }
+
+function checkCallback(success) {
+	var divCheck = document.getElementById("divCheckSopConnector");
+	var divManager = document.getElementById("divOfflineManager");
+	
+	if (success) {
+		divCheck.style.display = "none";
+		divManager.style.display = "block";	
+	}
+	else {
+		divCheck.style.display = "none";
+		divManager.style.display = "none";
+		print("no sopConnector found"); // Check user_agent Firefox and offer xpi download if allowed 
+	}
+} 
+
+function checkSopConnector(handler) {
+	var timeout = 5000;
+	var sopFound = false;
+	var counter = 0;
+
+	var timer = setInterval(function() { 
+		counter+=100;
+		try {
+			if (sopConnector) {
+				sopFound = true;
+				clearInterval(timer);
+				return;
+				//checkSopVersion(sopConnector.getSopVersion());
+				//alert(sopConnector.getSopVersion());
+			}
+		}
+		catch(e) {}
+		finally {
+			if (sopFound) {
+				clearInterval(timer);
+				if (typeof handler == "function") {
+					handler.call(null,true);
+				}
+				return;
+			}
+			if (counter > timeout) {
+				clearInterval(timer);
+				if (typeof handler == "function") {
+					handler.call(null,false);
+				}
+				return;
+			}
+		}
+	} , 100);
+}
 
 function checkSopVersion(v) {
 	var metas = document.getElementsByTagName('meta');  
@@ -15,28 +68,7 @@ function checkSopVersion(v) {
 	}
 }
 
-var timer = setInterval(function() { 
-	counter+=100;
-	try {
-		if (sopConnector) {
-			sopFound = true;
-			checkSopVersion(sopConnector.getSopVersion());
-			//alert(sopConnector.getSopVersion());
-		}
-	}
-	catch(e) {}
-	finally {
-		if (sopFound || counter > timeout) {
-			clearInterval(timer);
-		}
-	}
-} , 100);
-
 function getOfflineUrl(id) {
-	if (!sopFound) {
-		alert("no sopConnector found!");
-		return;
-	}
 	var url = sopConnector.getOfflineUrl(id);
 	return url;
 }
@@ -55,6 +87,11 @@ function importLm(id) { // url: network address for binary and async zip downloa
 	
 }
 
+function importTracking() { // fixed adress in som.js just for testing transport
+	function handler(success) {
+		alert(success);
+	}
+	sopConnector.importTracking(handler);
+}
 
-
-
+checkSopConnector(checkCallback);
