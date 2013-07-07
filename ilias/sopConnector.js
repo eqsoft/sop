@@ -1,5 +1,6 @@
-
-var importContentUrl = "http://localhost:81/ilias/trunk/importLm.php";
+var importContentUrl = "http://localhost:81/ilias/trunk/importLm.php"; 							// Stefan internal NAT
+var importTrackingUrl = "http://localhost:81/ilias/trunk/ilias.php?baseClass=ilSAHSPresentationGUI&cmd=cmi";		// Stefan internal NAT
+//&ref_id=55";  
 
 function print(txt) {
 	var divOut = document.getElementById("out");
@@ -68,6 +69,8 @@ function checkSopVersion(v) {
 	}
 }
 
+
+
 function getOfflineUrl(id) {
 	var url = sopConnector.getOfflineUrl(id);
 	return url;
@@ -87,11 +90,13 @@ function importLm(id) { // url: network address for binary and async zip downloa
 	
 }
 
-function importTracking() { // fixed adress in som.js just for testing transport
+function importTracking(id, ref_id) {
+	var url = sopConnector.atoB(importTrackingUrl + '&ref_id='+ref_id);
 	function handler(success) {
 		alert(success);
 	}
-	sopConnector.importTracking(handler);
+	sopConnector.importTracking(id,url,handler);
 }
 
 checkSopConnector(checkCallback);
+
