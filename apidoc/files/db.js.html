@@ -51,6 +51,8 @@
             
                 <li><a href="../classes/som.html">som</a></li>
             
+                <li><a href="../classes/sqlite.html">sqlite</a></li>
+            
                 <li><a href="../classes/utils.html">utils</a></li>
             
             </ul>
@@ -133,9 +135,9 @@ exports.__exposedProps__ = {
 
 var data = require(&#x27;self&#x27;).data;
 Cu.import(&quot;resource://gre/modules/FileUtils.jsm&quot;);
-Cu.import(data.url(&quot;som/modules/sqlite.js&quot;)); 
-
+ 
 var utils = require(&quot;./utils&quot;);
+var sqlite = require(&#x27;./sqlite&#x27;);
 var dbHandler = null;
 var db = null;
 
@@ -148,7 +150,7 @@ var db = null;
 function openDb() {
 	utils.log(&quot;open db&quot;);
 	if (dbHandler === null) {
-		dbHandler = new SQLiteHandler();
+		dbHandler = new sqlite.SQLiteHandler();
 	}
 	if (dbHandler.isConnected()) {
 		utils.log(&quot;db already connected&quot;);
@@ -268,6 +270,14 @@ function dbData(statement, params) {
 				new Array(params[4],params[0],params[1])
 				);
 			break;
+		case &quot;lmSetStatusByClientAndObjId&quot; :
+			ret = dbHandler.manipulateF(
+				&quot;UPDATE lm set status=%s WHERE client=%s AND obj_id=%s&quot;,
+				new Array(&quot;text&quot;,&quot;text&quot;,&quot;integer&quot;),
+				new Array(params[2],params[0],params[1])
+				);
+				emit(exports, &quot;lmUserDataChanged&quot;, params[0]+&quot;_&quot;+params[1]);
+			break;
 		case &quot;lmGetUser_dataByClientAndObjId&quot; :
 			ret = dbHandler.manipulateF(
 				&quot;SELECT user_data FROM lmUser WHERE client=%s AND obj_id=%s&quot;,
@@ -275,6 +285,77 @@ function dbData(statement, params) {
 				new Array(params[0],params[1])
 				);
 			break;
+		case &quot;lmGetAllCmiNodeByClientAndObjId&quot; :
+			ret = dbHandler.manipulateF(
+				&quot;SELECT accesscount,accessduration,accessed,activityabsduration,activityattemptcount,activityexpduration,activityprogstatus,attemptabsduration,attemptcomplamount,attemptcomplstatus,attemptexpduration,attemptprogstatus,audio_captioning,audio_level,availablechildren,cmi_node_id,completion,completion_status,completion_threshold,cp_node_id,created,credit,delivery_speed,c_entry,c_exit,c_language,launch_data,learner_name,location,c_max,c_min,c_mode,modified,progress_measure,c_raw,scaled,scaled_passing_score,session_time,success_status,suspend_data,total_time,user_id  FROM cmi_node WHERE client=%s AND obj_id=%s&quot;,
+				new Array(&quot;text&quot;,&quot;integer&quot;),
+				new Array(params[0],params[1])
+				);
+			break;
+		case &quot;lmGetAllCmiCommentByClientAndObjId&quot; :
+			ret = dbHandler.manipulateF(
+				&quot;SELECT cmi_comment_id, cmi_node_id, c_comment, c_timestamp, location, sourceislms &quot;
+				+&quot;FROM cmi_comment WHERE client=%s AND obj_id=%s ORDER BY cmi_comment_id&quot;,
+				new Array(&quot;text&quot;,&quot;integer&quot;),
+				new Array(params[0],params[1])
+				);
+			break;
+		case &quot;lmGetAllCmiCorrectResponseByClientAndObjId&quot; :
+			ret = dbHandler.manipulateF(
+				&quot;SELECT cmi_node_id,cmi_correct_resp_id,cmi_interaction_id,pattern &quot;
+				+&quot;FROM cmi_correct_response WHERE client=%s AND obj_id=%s ORDER BY cmi_node_id,cmi_correct_resp_id&quot;,
+				new Array(&quot;text&quot;,&quot;integer&quot;),
+				new Array(params[0],params[1])
+				);
+			break;
+		case &quot;lmGetAllCmiInteractionByClientAndObjId&quot; :
+			ret = dbHandler.manipulateF(
+				&quot;SELECT cmi_interaction_id, cmi_node_id, description, id, latency, learner_response, result, c_timestamp, c_type, weighting &quot;
+				+&quot;FROM cmi_interaction WHERE client=%s AND obj_id=%s ORDER BY cmi_interaction_id&quot;,
+				new Array(&quot;text&quot;,&quot;integer&quot;),
+				new Array(params[0],params[1])
+				);
+			break;
+		case &quot;lmGetAllCmiObjectiveByClientAndObjId&quot; :
+			ret = dbHandler.manipulateF(
+				&quot;SELECT cmi_interaction_id, cmi_node_id, cmi_objective_id, completion_status, description, id, c_max, c_min, c_raw, scaled, progress_measure, success_status, scope &quot;
+				+&quot;FROM cmi_objective WHERE client=%s AND obj_id=%s ORDER BY cmi_objective_id&quot;,
+				new Array(&quot;text&quot;,&quot;integer&quot;),
+				new Array(params[0],params[1])
+				);
+			break;
+		case &quot;lmGetAllCmiPackageByClientAndObjId&quot; :
+			ret = dbHandler.manipulateF(
+				&#x27;SELECT user_id, learner_name, slm_id, default_lesson_mode &quot;mode&quot;, credit &#x27;
+				+&quot;FROM cp_package WHERE client=%s AND obj_id=%s&quot;,
+				new Array(&quot;text&quot;,&quot;integer&quot;),
+				new Array(params[0],params[1])
+				);
+			break;
+		case &quot;lmSetAllCmiNodeByClientAndObjId&quot; :
+			for(var i=2;i&lt;45;i++) {if(params[i]==&quot;&quot;) {params[i]=null;}}
+			ret = dbHandler.manipulateF(
+				&quot;SELECT count(*) FROM cmi_node WHERE client=%s AND obj_id=%s AND cmi_node_id=%s&quot;,
+				new Array(&quot;text&quot;,&quot;integer&quot;,&quot;integer&quot;),
+				new Array(params[0],params[1],params[17])
+				);
+			var counter = parseInt(dbHandler.getRecords());
+			if(counter==0) {
+				ret = dbHandler.manipulateF(
+					&quot;INSERT INTO cmi_node (client, obj_id, accesscount,accessduration,accessed,activityabsduration,activityattemptcount,activityexpduration,activityprogstatus,attemptabsduration,attemptcomplamount,attemptcomplstatus,attemptexpduration,attemptprogstatus,audio_captioning,audio_level,availablechildren,cmi_node_id,completion,completion_status,completion_threshold,cp_node_id,created,credit,delivery_speed,c_entry,c_exit,c_language,launch_data,learner_name,location,c_max,c_min,c_mode,modified,progress_measure,c_raw,scaled,scaled_passing_score,session_time,success_status,suspend_data,total_time,user_id,c_timestamp,additional_tables) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)&quot;,
+				new Array(&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;INTEGER&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;REAL&quot;,&quot;REAL&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;),
+				new Array(params[0],params[1],params[2],params[3],params[4],params[5],params[6],params[7],params[8],params[9],params[10],params[11],params[12],params[13],params[14],params[15],params[16],params[17],params[18],params[19],params[20],params[21],params[22],params[23],params[24],params[25],params[26],params[27],params[28],params[29],params[30],params[31],params[32],params[33],params[34],params[35],params[36],params[37],params[38],params[39],params[40],params[41],params[42],params[43],params[44],params[45])
+				);
+			} else {
+				ret = dbHandler.manipulateF(
+					&quot;UPDATE cmi_node set accesscount=%s, accessduration=%s, accessed=%s, activityabsduration=%s, activityattemptcount=%s, activityexpduration=%s, activityprogstatus=%s, attemptabsduration=%s, attemptcomplamount=%s, attemptcomplstatus=%s, attemptexpduration=%s, attemptprogstatus=%s, audio_captioning=%s, audio_level=%s, availablechildren=%s, completion=%s, completion_status=%s, completion_threshold=%s, cp_node_id=%s, created=%s, credit=%s, delivery_speed=%s, c_entry=%s, c_exit=%s, c_language=%s, launch_data=%s, learner_name=%s, location=%s, c_max=%s, c_min=%s, c_mode=%s, modified=%s, progress_measure=%s, c_raw=%s, scaled=%s, scaled_passing_score=%s, session_time=%s, success_status=%s, suspend_data=%s, total_time=%s, user_id=%s, c_timestamp=%s, additional_tables=%s &quot;
+					+&quot;WHERE client=%s AND obj_id=%s AND cmi_node_id=%s&quot;,
+				new Array(&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;INTEGER&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;REAL&quot;,&quot;REAL&quot;,&quot;REAL&quot;,&quot;REAL&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;TEXT&quot;,&quot;INTEGER&quot;,&quot;INTEGER&quot;),
+				new Array(params[2],params[3],params[4],params[5],params[6],params[7],params[8],params[9],params[10],params[11],params[12],params[13],params[14],params[15],params[16],params[18],params[19],params[20],params[21],params[22],params[23],params[24],params[25],params[26],params[27],params[28],params[29],params[30],params[31],params[32],params[33],params[34],params[35],params[36],params[37],params[38],params[39],params[40],params[41],params[42],params[43],params[44],params[45],params[0],params[1],params[17])
+				);
+			}
+			break;
+
 		default :
 		//nothing
 	}

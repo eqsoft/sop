@@ -51,6 +51,8 @@
             
                 <li><a href="../classes/som.html">som</a></li>
             
+                <li><a href="../classes/sqlite.html">sqlite</a></li>
+            
                 <li><a href="../classes/utils.html">utils</a></li>
             
             </ul>
@@ -109,8 +111,9 @@ module.metadata = {
   &quot;stability&quot;: &quot;unstable&quot;
 };
 
-const {Cc, Ci, Cu, Cr, Cm} = require(&quot;chrome&quot;);
-
+const {Cc, Ci, Cu, Cr, Cm, components} = require(&quot;chrome&quot;);
+Cu.import(&quot;resource://gre/modules/FileUtils.jsm&quot;);
+Cu.import(&quot;resource://gre/modules/NetUtil.jsm&quot;);
 /**
  * @public
  * @method on
@@ -123,6 +126,7 @@ const {Cc, Ci, Cu, Cr, Cm} = require(&quot;chrome&quot;);
  * @public
  * @method removeListener
  **/
+var base64 = require(&quot;sdk/base64&quot;);
 var { emit, off, on, once } = require(&quot;sdk/event/core&quot;);
 exports.on = on.bind(null, exports);
 exports.once = once.bind(null, exports);
@@ -135,7 +139,7 @@ exports.__exposedProps__ = {
 };
 
 var db = require(&quot;./db&quot;);
-//var env = require(&quot;./env&quot;); // needed?
+var env = require(&quot;./env&quot;);
 var gui = require(&quot;./gui&quot;);
 var utils = require(&quot;./utils&quot;);
 
@@ -151,15 +155,17 @@ var lms = {};
  * @method getAllLm
  * @return {Object} lms
  **/ 
-function getAllLm() { 
+function getAllLm(silent=false) { 
 	lms = {}; // delete all
 	var d = db.getData(&quot;lmGetAll&quot;,null,true,true);
 	for each (var row in d) {
 		var id = row.client + &quot;_&quot; + row.obj_id;
-		var lm = getLmById(id,row);
+		var lm = getLmById(id,true,row);
 		lms[id] = lm;
-	} 
-	emit(exports, &quot;allLmChanged&quot;);
+	}
+	if (!silent) { 
+		emit(exports, &quot;allLmChanged&quot;);
+	}
 	return lms;
 }
 
@@ -172,10 +178,11 @@ function getAllLm() {
  * @public
  * @method getLmById
  * @param {String} id client_{obj_id}
- * @param {Object} row=false param only available when called from getAllLm
+ * @param {Boolean} silent dont emit event
+ * @param {Object} param row=false only available when called from getAllLm
  * @return {Object} lm
  **/
-function getLmById(id,row=false) {
+function getLmById(id,evt,row=false) {
 	var idArr = id.split(&quot;_&quot;);
 	var client = idArr[0];
 	var obj_id = idArr[1];
@@ -207,7 +214,9 @@ function getLmById(id,row=false) {
 	if (!row) { // update lm object in lms
 		delete lms[id];
 		lms[id] = lm;
-		emit(exports, &quot;lmChanged&quot;, id);
+		if (evt) {
+			emit(exports, &quot;lmChanged&quot;, id);
+		}
 	}
 	return lm;
 }
@@ -224,18 +233,213 @@ function getLmsObj() {
 	return lms;
 }
 
+/** 
+ * checks if outgoing localhost request is importRequest from host 
+ * @public
+ * @method isImportRequest
+ * @param {String} url 
+ **/  
+function isImportRequest(url) {
+	utils.log(url);
+	var ret = /(localhost|127\.0\.0\.1).*?import\?.*/g.test(url);
+	return ret;
+}
+
+/** 
+ * imports a Learning Module Content Zip
+ * @public
+ * @method importLm 
+ * @param {String} url
+ **/
+function importLm(id, burl, callback) {
+	try {
+		var url = base64.decode(burl);
+		var params = id.split(&quot;_&quot;);
+		var client = params[0];
+		var obj_id = params[1];
+		var io = env.initIO();
+		var trg = io.sopDir.clone();
+		trg.append(&quot;data&quot;);
+		trg.append(client);
+		// new client?
+		if (!trg.exists()) {
+			trg.create(Ci.nsIFile.DIRECTORY_TYPE,FileUtils.PERMS_DIRECTORY);
+		}
+		trg.append(&quot;lm_data&quot;);
+		if (!trg.exists()) {
+			trg.create(Ci.nsIFile.DIRECTORY_TYPE,FileUtils.PERMS_DIRECTORY);
+		}
+		trg.append(&quot;lm_&quot; + obj_id);
+		if (trg.exists()) { // strange: it should not be possible to import any lm twice!
+			trg.remove(true);
+			utils.log(&quot;warn: lm with id &quot; + id + &quot; exists, it will be deleted!&quot;);
+		}
+		trg.create(Ci.nsIFile.DIRECTORY_TYPE,FileUtils.PERMS_DIRECTORY);
+		var file = trg.clone();
+		file.append(id + &quot;.zip&quot;);
+		file.create(Ci.nsIFile.NORMAL_FILE_TYPE,FileUtils.PERMS_FILE);
+		
+		let uri = NetUtil.newURI(url);
+		let channel = NetUtil.newChannel(uri);
+		channel.QueryInterface(Ci.nsIHttpChannel);
+		channel.requestMethod = &quot;GET&quot;;
+		
+		NetUtil.asyncFetch(channel, function(istream, status) {
+			if (!components.isSuccessCode(status)) {
+				if (typeof callback == &quot;function&quot;) {
+					callback.call(null,false);
+				}
+				utils.log(&quot;error fetching: &quot; + url + &quot;(status: &quot; + status + &quot;)&quot;);
+				return;
+			}
+			var ostream = FileUtils.openSafeFileOutputStream(file);
+			NetUtil.asyncCopy(istream, ostream, function(status) {
+				if (!components.isSuccessCode(status)) {
+					if (typeof callback == &quot;function&quot;) {
+						callback.call(null,false);
+					}
+					utils.log(&quot;error saving: &quot; + url + &quot; to &quot; + file.path + &quot; (status: &quot; + status + &quot;)&quot;);
+					return;
+				}
+				utils.log(&quot;content zip copied!&quot;);
+				utils.extractFiles(file,trg);
+				file.remove(false);
+				utils.log(&quot;lm extracted and zip removed.&quot;);
+				if (typeof callback == &quot;function&quot;) {
+					callback.call(null,true);
+				}
+				// start som if trackingdata 
+			});
+		});
+	}
+	catch(e) {
+		utils.err(e);
+	}
+	return;
+}
+
+/** 
+ * imports tracking data
+ * @public
+ * @method importTracking 
+ * @param {String} id
+ * @param {String} base64 url
+ * @param {Function} callback function
+ **/
+ 
+function importTracking(id, burl, callback) { // id must be given
+	var url = base64.decode(burl);
+	let uri = NetUtil.newURI(url);
+	let channel = NetUtil.newChannel(uri);
+	channel.QueryInterface(Ci.nsIHttpChannel);
+	channel.requestMethod = &quot;GET&quot;;	
+	channel.setRequestHeader(&quot;Accept&quot;,&quot;text/javascript&quot;,false); 
+	channel.setRequestHeader(&quot;Accept-Charset&quot;,&quot;UTF-8&quot;,false);
+	NetUtil.asyncFetch(channel, function(istream, status) {
+		if (!components.isSuccessCode(status)) {
+			utils.log(&quot;error fetching: &quot; + url + &quot;(status: &quot; + status + &quot;)&quot;);
+			return;
+		}
+		var data = NetUtil.readInputStreamToString(istream, istream.available());
+		try {
+			var o = JSON.parse(data);
+			if (typeof o == &quot;object&quot; &amp;&amp; typeof o.schema == &quot;object&quot;) {
+				if (typeof callback == &quot;function&quot;) {
+					callback.call(null,true);
+				}
+				utils.log(&quot;valid tracking data recieved&quot;);
+				utils.log(data);
+			}
+			else {
+				if (typeof callback == &quot;function&quot;) {
+					callback.call(null,false);
+				}
+				utils.err(&quot;tracking data not valid!&quot;);
+			}
+		}
+		catch(e) {
+			if (typeof callback == &quot;function&quot;) {
+				callback.call(null,false);
+			}
+			utils.err(&quot;tracking data not valid: &quot; + e + &quot;\n&quot; + data);
+		}
+	});
+}
+
+/** 
+ * pushes tracking data
+ * @public
+ * @method pushTracking 
+ * @param {String} id
+ * @param {String} base64 url
+ * @param {Function} callback function
+ **/
+function pushTracking(id, burl, callback) {
+	return {};
+	// ToDo
+}
+
+function getOfflineUrl(id) {
+	env.run();
+	var lm = getLmById(id,false);
+	if (!lm) {
+		if (!lm) {
+			utils.err(&quot;no lm with id: &quot; + id);
+			return false;
+		}
+		
+	}
+	var player = (lm.scorm_version == &quot;1.2&quot;) ? env.globals.player12 : env.globals.player2004;
+	var url = env.globals.serverProtocol + &quot;://&quot; + env.globals.serverName + &quot;:&quot; + env.globals.serverPort + &quot;/&quot; + player + &quot;?&quot; + &quot;client=&quot; + lm.client + &quot;&amp;obj_id=&quot; + lm.obj_id;
+	return url;
+}
+
+function atoB(txt) {
+	return base64.encode(txt);
+}
+
+function btoA (txt) {
+	return base64.decode(txt);
+}
 //env.on(&quot;run&quot;, function() { getAllLm }); needed??
 db.on(&quot;lmUserDataChanged&quot;, function(id) {
 	utils.log(&quot;lmUserDataChanged: &quot; + id);
-	getLmById(id);
+	getLmById(id,true);
 });
+
+var connectorFuncs = {
+	getOfflineUrl	: getOfflineUrl,
+	atoB 		: atoB,
+	btoA 		: btoA, 
+	importLm	: importLm,
+	importTracking	: importTracking,
+	pushTracking	: pushTracking,
+	__exposedProps__ : {
+		getOfflineUrl 	: &quot;r&quot;,
+		atoB		: &quot;r&quot;,
+		btoA		: &quot;r&quot;,
+		importLm	: &quot;r&quot;,
+		importTracking	: &quot;r&quot;
+	}
+}
 
 exports.getAllLm = getAllLm;
 exports.getLmById = getLmById;
 exports.getLmsObj = getLmsObj;
+exports.getLmsObj = getLmsObj;
+exports.isImportRequest = isImportRequest;
+exports.getOfflineUrl = getOfflineUrl;
+exports.importTracking = importTracking;
+exports.pushTracking = importTracking;
+exports.connectorFuncs = connectorFuncs;
 exports.__exposedProps__[&quot;getAllLm&quot;] = &quot;r&quot;;
 exports.__exposedProps__[&quot;getLmById&quot;] = &quot;r&quot;;
 exports.__exposedProps__[&quot;getLmsObj&quot;] = &quot;r&quot;;
+exports.__exposedProps__[&quot;isImportRequest&quot;] = &quot;r&quot;;
+exports.__exposedProps__[&quot;importTracking&quot;] = &quot;r&quot;;
+exports.__exposedProps__[&quot;connectorFuncs&quot;] = &quot;r&quot;;
+
+
 
 
 

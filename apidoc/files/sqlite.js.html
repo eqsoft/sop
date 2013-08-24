@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>sqlite.js - The SCORM-Offline-Player API</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="The SCORM-Offline-Player API"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/db.html">db</a></li>
+            
+                <li><a href="../classes/env.html">env</a></li>
+            
+                <li><a href="../classes/gui.html">gui</a></li>
+            
+                <li><a href="../classes/main.html">main</a></li>
+            
+                <li><a href="../classes/som.html">som</a></li>
+            
+                <li><a href="../classes/sqlite.html">sqlite</a></li>
+            
+                <li><a href="../classes/utils.html">utils</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: sqlite.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * Database class
+ *  
+ * @class sqlite
+ **/ 
+&#x27;use strict&#x27;;
+
+module.metadata = {
+  &quot;stability&quot;: &quot;unstable&quot;
+};
+
+const {Cc, Ci, Cu, Cr, Cm} = require(&quot;chrome&quot;);
+/**
+ * @public
+ * @method on
+ **/
+/**
+ * @public
+ * @method once
+ **/
+/**
+ * @public
+ * @method removeListener
+ **/
+var { emit, off, on, once } = require(&quot;sdk/event/core&quot;);
+exports.on = on.bind(null, exports);
+exports.once = once.bind(null, exports);
+exports.removeListener = function removeListener(type, listener) {
+	off(exports, type, listener);
+};
+exports.__exposedProps__ = {
+	on 		: &quot;rw&quot;,
+	removeListener	: &quot;rw&quot;
+};
+
+//TODO: some documentation for this file
+//TODO: some simplification
+//as of now, depends on mFuncConfirm (a function), mBlobPrefs (from prefs) &amp; setStrForNull (in sqlitefn); but the latter 2 have default values and even if the first one is not set, there will be no confirmation before executing. So, this file is pretty independent now.
+
+let EXPORTED_SYMBOLS = [&quot;SQLiteTypes&quot;, &quot;SQLiteHandler&quot;, &quot;SQLiteFn&quot;];
+
+//https://developer.mozilla.org/en/mozIStorageValueArray
+const SQLiteTypes = {
+  NULL   : 0,
+  INTEGER: 1,
+  REAL  : 2,
+  TEXT   : 3,
+  BLOB   : 4
+};
+
+const promptService  = Cc[&quot;@mozilla.org/embedcomp/prompt-service;1&quot;].getService(Ci.nsIPromptService);
+
+//promptService.alert(null, &quot;SQLite Manager Alert&quot;, sMsg);
+
+var stmtCallback = {
+  handleResult: function(aResultSet) {
+    Cu.reportError(&quot;in handleResult: &quot;);
+    for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
+//      Cc[&quot;@mozilla.org/consoleservice;1&quot;].getService(Ci.nsIConsoleService).logStringMessage(&quot;handleResult\n&quot; + 11);
+//       let value = row.getResultByName(&quot;column_name&quot;);
+    }
+  },
+
+  handleError: function(aError) {
+    Cu.reportError(&quot;Error in executeAsync: &quot; + aError.message);
+  },
+
+  handleCompletion: function(aReason) {
+    Cu.reportError(&quot;in handleCompletion: &quot; + aReason);
+    switch (aReason) {
+      case Ci.mozIStorageStatementCallback.REASON_FINISHED:
+        return true;
+      case Ci.mozIStorageStatementCallback.REASON_CANCELED:
+      case Ci.mozIStorageStatementCallback.REASON_ERROR:
+        alert(&quot;Query canceled or aborted!&quot;);
+        return false;
+    }
+  }
+};
+
+function SQLiteHandler() {
+  //this.storageService = Cc[&quot;@mozilla.org/storage/service;1&quot;].getService(Ci.mozIStorageService);
+  //this.consoleService = Cc[&quot;@mozilla.org/consoleservice;1&quot;].getService(Ci.nsIConsoleService);
+  //this.promptService = Cc[&quot;@mozilla.org/embedcomp/prompt-service;1&quot;].getService(Ci.nsIPromptService);
+}
+
+SQLiteHandler.prototype = {
+  storageService : Cc[&quot;@mozilla.org/storage/service;1&quot;].getService(Ci.mozIStorageService),
+  consoleService : Cc[&quot;@mozilla.org/consoleservice;1&quot;].getService(Ci.nsIConsoleService),
+  promptService : Cc[&quot;@mozilla.org/embedcomp/prompt-service;1&quot;].getService(Ci.nsIPromptService),
+  dbConn: null,
+  mbShared: true,
+  mOpenStatus: &quot;&quot;,
+
+  aTableData: null,       // Stores 2D array of table data
+  aTableType: null,
+  aColumns: null,
+
+  colNameArray: null,
+  resultsArray: null,
+  statsArray: null,
+
+  maDbList: [&quot;main&quot;, &quot;temp&quot;],
+  mLogicalDbName: &quot;main&quot;, //for main, temp and attached databases
+
+  lastError: &quot;&quot;,
+  lastErrorString: &quot;&quot;,
+  miTime: 0, //time elapsed during queries (in milliseconds)
+
+  mFuncConfirm: null,
+  mBlobPrefs: {sStrForBlob: &#x27;BLOB&#x27;, bShowSize: true, iMaxSizeToShowData: 100, iHowToShowData: 0},
+
+  //issue #413: we should not attempt to close the places.sqlite
+  //the following variable tells us that we are connected to places.sqlite
+  mbPlacesDb: false, //true, if places.sqlite in profile dir is open
+
+  //array to hold names of added functions; will be used in removing functions
+  maAddedFunctions: [],
+
+  // openDatabase: opens a connection to the db file nsIFile
+  // bShared = true: first attempt shared mode, then unshared
+  // bShared = false: attempt unshared cache mode only
+  openDatabase: function(nsIFile, bShared) {
+    this.closeConnection();
+
+    try {
+      if (!bShared) // dummy exception to reach catch to use openUnsharedDatabase
+        throw 0;
+
+      this.dbConn = this.storageService.openDatabase(nsIFile);
+      this.mbShared = true;
+      // if the db does not exist it does not give us any indication
+      // this.dbConn.lastErrorString returns &quot;not an error&quot;
+    }
+    catch (e) { //attempt unshared connection
+      try {
+        this.dbConn = this.storageService.openUnsharedDatabase(nsIFile);
+        this.mbShared = false;
+        // if the db does not exist it does not give us any indication
+        // this.dbConn.lastErrorString returns &quot;not an error&quot;
+      }
+      catch (e) {
+        var msg = this.onSqlError(e, &quot;Error in opening file &quot; + nsIFile.leafName + &quot; - either the file is encrypted or corrupt&quot;, null, true);
+        Cu.reportError(msg);
+        return false;
+      }
+    }
+
+    if(this.dbConn == null)
+      return false;
+
+    this.mOpenStatus = this.mbShared?&quot;Shared&quot;:&quot;Exclusive&quot;;
+    return true;
+  },
+
+  //for places.sqlite
+  openSpecialProfileDatabase: function(nsIFile) {
+    this.closeConnection();
+
+    try {
+      this.dbConn = Cc[&quot;@mozilla.org/browser/nav-history-service;1&quot;].getService(Ci.nsINavHistoryService).QueryInterface(Ci.nsPIPlacesDatabase).DBConnection;
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Error in opening places.sqlite&quot;, null, true);
+      Cu.reportError(msg);
+      return false;
+    }
+
+    if(this.dbConn == null)
+      return false;
+
+    this.mbPlacesDb = true;
+    this.mOpenStatus = &quot;Shared&quot;;
+    return true;
+  },
+
+  openSpecialDatabase: function(sSpecialName) {
+    if (sSpecialName != &quot;memory&quot;)
+      return false;
+
+    this.closeConnection();
+
+    try {
+      this.dbConn = this.storageService.openSpecialDatabase(sSpecialName);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Error in opening in memory database&quot;, null, true);
+      Cu.reportError(msg);
+      return false;
+    }
+
+    if(this.dbConn == null)
+      return false;
+
+    this.mOpenStatus = &quot;Memory&quot;;
+    return true;
+  },
+
+  closeConnection: function() {
+    if (this.dbConn != null) {
+      //remove all functions added by us otherwise db which remain open after our connection to it closes (e.g., places.sqlite) will continue to have these functions
+      this.removeAllFunctions();
+      this.maAddedFunctions = [];
+    }
+
+    //for places.sqlite, do not attempt to close the connection
+    if (this.mbPlacesDb) {
+      this.dbConn = null;
+      this.mbPlacesDb = false;
+    }
+
+    if (this.dbConn != null) {
+      try {
+        this.dbConn.close();
+      } catch (e) {
+        this.dbConn = null;
+      }
+    }
+
+    this.dbConn = null;
+    this.aTableData = null;
+    this.aTableType = null;
+    this.aColumns = null;
+    this.mOpenStatus = &quot;&quot;;
+  },
+
+  createFunction: function(fnName, argLength, fnObject) {
+    if (funcNamesAll.indexOf(fnName) != -1) {
+      this.logMessage(&quot;Cannot create function called: &quot; + fnName + &quot;\nThis name belongs to a core, aggregate or datetime function.&quot;);
+      return;
+    }
+    try {
+      this.dbConn.createFunction(fnName, argLength, fnObject);
+    } catch (e) {
+      var msg = &quot;Failed to create storage function: &quot; + fnName + &quot;\nA function by this name may already have been created.&quot;;
+      var msg = this.onSqlError(e, msg, null, false);
+      Cu.reportError(msg);
+      return false;
+    }
+
+    if (this.maAddedFunctions.indexOf(fnName) &lt; 0)
+      this.maAddedFunctions.push(fnName);
+
+    return true;
+  },
+
+  createAggregateFunction: function(fnName, argLength, fnObject) {
+    if (funcNamesAll.indexOf(fnName) != -1) {
+      this.logMessage(&quot;Cannot create aggregate function called: &quot; + fnName + &quot;\nThis name belongs to a core, aggregate or datetime function.&quot;);
+      return;
+    }
+    try {
+      this.dbConn.createAggregateFunction(fnName, argLength, fnObject);
+    } catch (e) {
+      var msg = &quot;Failed to create storage function: &quot; + fnName + &quot;\nA function by this name may already have been created.&quot;;
+      var msg = this.onSqlError(e, msg, null, false);
+      Cu.reportError(msg);
+      return false;
+    }
+
+    if (this.maAddedFunctions.indexOf(fnName) &lt; 0)
+      this.maAddedFunctions.push(fnName);
+
+    return true;
+  },
+
+  //remove all functions created by createFunction &amp; createAggregateFunction
+  removeAllFunctions: function() {
+    var i = 0;
+    while (i &lt; this.maAddedFunctions.length) {
+      try {
+        var step = 0;
+        var fnName = this.maAddedFunctions[i];
+        step = 1;
+        this.dbConn.removeFunction(fnName);
+        step = 2;
+        this.maAddedFunctions.splice(i, 1);
+      } catch (e) {
+        i++;
+        var msg = this.onSqlError(e, &quot;removeAllFunctions: Failed while attempting to remove storage function: &quot; + fnName + &#x27;\nstep: &#x27; + step, null, false);
+        Cu.reportError(msg);
+      }
+    }
+  },
+
+  getOpenStatus: function() { return this.mOpenStatus; },
+  getElapsedTime: function() {
+    //in milliseconds
+    return this.miTime;
+  },
+  getRecords: function() { return this.aTableData; },
+  getRecordTypes: function() { return this.aTableType; },
+  getColumns: function() { return this.aColumns; },
+  getLastErrorId: function() { return this.lastError; },
+  getLastError: function() { return this.lastErrorString; },
+
+  setErrorString: function() {
+    this.lastError = this.dbConn.lastError;
+    this.lastErrorString = this.dbConn.lastErrorString;
+  },
+
+  get logicalDbName() { return this.mLogicalDbName; },
+  get schemaVersion() { return this.dbConn.schemaVersion; },
+
+  setLogicalDbName: function(sDbName) {
+    this.mLogicalDbName = sDbName;
+  },
+
+  setBlobPrefs: function(objBlobPrefs) {
+    this.mBlobPrefs = objBlobPrefs;
+  },
+
+  setFuncConfirm: function(oFunc) {
+    this.mFuncConfirm = oFunc;
+  },
+
+  getPrefixedName: function(objName, sDbName) {
+    if (sDbName == &quot;&quot;)
+      sDbName = this.mLogicalDbName;
+
+    return SQLiteFn.quoteIdentifier(sDbName) + &quot;.&quot; + SQLiteFn.quoteIdentifier(objName);
+  },
+
+  getPrefixedMasterName: function(sDbName) {
+    if (sDbName == &quot;&quot;)
+      sDbName = this.mLogicalDbName;
+
+    if (sDbName == &quot;temp&quot;)
+      return &quot;sqlite_temp_master&quot;;
+    else
+      return SQLiteFn.quoteIdentifier(sDbName) + &quot;.sqlite_master&quot;;
+  },
+
+  getFileName: function() {
+    if (this.dbConn != null)
+      return this.dbConn.databaseFile.leafName;
+    return null;
+  },
+
+  getFile: function() {
+    if (this.dbConn != null)
+      return this.dbConn.databaseFile;
+    return null;
+  },
+
+  isConnected: function() {
+    if (this.dbConn != null)
+      return true;
+    return false;
+  },
+
+  get sqliteVersion() {
+    this.selectQuery(&quot;SELECT sqlite_version()&quot;);
+    return this.aTableData[0][0];
+  },
+
+  setSetting: function(sSetting, sValue) {
+    if (sSetting == &quot;encoding&quot;)
+      sValue = &quot;&#x27;&quot; + sValue + &quot;&#x27;&quot;;
+    var sQuery = &quot;PRAGMA &quot; + sSetting + &quot; = &quot; + sValue;
+    //do not execute in a transaction; some settings will cause error
+    this.selectQuery(sQuery);
+
+    return this.getSetting(sSetting);
+  },
+
+  getSetting: function(sSetting) {
+    var iValue = null;
+    try {
+      this.selectQuery(&quot;PRAGMA &quot; + sSetting);
+      iValue = this.aTableData[0][0];
+      return iValue;
+    } catch (e) {
+      this.alert(&quot;PRAGMA &quot; + sSetting + &quot;: exception - &quot; + e.message);
+    }
+  },
+  
+  tableExists: function(sTable, sDbName) {
+    if (typeof sDbName == &quot;undefined&quot;)
+      return this.dbConn.tableExists(sTable);
+    else {
+      var aList = this.getObjectList(&quot;table&quot;, sDbName);
+      if (aList.indexOf(sTable) &gt;= 0)
+        return true;
+    }
+    return false;
+  },
+
+  // Type = table|index|view|trigger,
+  objectExists: function(sType, sObjName) {
+    var aList = this.getObjectList(sType, &quot;&quot;);
+    if (aList.indexOf(sObjName) &gt;= 0)
+      return true;
+
+    return false;
+  },
+
+  //getObjectList: must return an array of names of type=argument 
+  // Type = master|table|index|view|trigger,
+  //empty array if no object found
+  getObjectList: function(sType, sDb) {
+    if (sDb == &quot;&quot;)
+      sDb = this.mLogicalDbName;
+
+    var aResult = [];
+
+    if (sType == &quot;master&quot;) {
+      aResult = [&quot;sqlite_master&quot;];
+      if (sDb == &quot;temp&quot;)
+        aResult = [&quot;sqlite_temp_master&quot;];
+      return aResult;    
+    }
+
+    var sTable = this.getPrefixedMasterName(sDb);
+    var sQuery = &quot;SELECT name FROM &quot; + sTable + &quot; WHERE type = &#x27;&quot;
+          + sType + &quot;&#x27; ORDER BY name&quot;;
+    this.selectQuery(sQuery);
+
+    for (var i = 0; i &lt; this.aTableData.length; i++)
+      aResult.push(this.aTableData[i][0]);
+
+    return aResult;
+  },
+  // loadTableData: retrieves data from a table including rowid if needed
+  // return r: -1 = error, 0 = ok without extracol,
+  // r &gt; 0 means column number of extracol starting with 1
+  loadTableData: function(sObjType, sObjName, aArgs) {
+    if (sObjType != &quot;master&quot; &amp;&amp; sObjType != &quot;table&quot; &amp;&amp; sObjType != &quot;view&quot;)
+      return -1;
+
+    var sCondition = aArgs.sWhere?aArgs.sWhere:&quot;&quot;;
+    var iLimit = aArgs.iLimit?aArgs.iLimit:-1;
+    var iOffset = aArgs.iOffset?aArgs.iOffset:0;
+    var sOrder = &quot;&quot;;
+    if (aArgs.aOrder &amp;&amp; aArgs.aOrder.length &gt; 0) {
+      var aTemp = [];
+      for (var i = 0; i &lt; aArgs.aOrder.length; i++) {
+        aTemp.push(SQLiteFn.quoteIdentifier(aArgs.aOrder[i][0]) + &quot; &quot; + aArgs.aOrder[i][1]);
+      }
+      sOrder = &quot; ORDER BY &quot; + aTemp.join(&quot;, &quot;) + &quot; &quot;;
+    }
+
+    var extracol = &quot;&quot;;
+    var iRetVal = 0;
+    var sLimitClause = &quot; LIMIT &quot; + iLimit + &quot; OFFSET &quot; + iOffset;
+    
+    if (sObjType == &quot;table&quot; || sObjType == &quot;master&quot;) {
+      //find whether the rowid is needed 
+      //or the table has an integer primary key
+      var rowidcol = this.getTableRowidCol(sObjName);
+      if (rowidcol[&quot;name&quot;] == &quot;rowid&quot;) {
+        extracol = &quot; &#x60;rowid&#x60;, &quot;;
+        iRetVal = 1;
+      }
+    }
+    //table having columns called rowid behave erratically
+    sObjName = this.getPrefixedName(sObjName, &quot;&quot;);
+    this.selectQuery(&quot;SELECT &quot; + extracol + &quot; * FROM &quot; + sObjName + &quot; &quot; + sCondition + sOrder + sLimitClause);
+    return iRetVal;
+  },
+
+  //for tables and views
+  getRowCount: function(sObjName, sCondition) {
+    var iValue = 0;
+    sObjName = this.getPrefixedName(sObjName, &quot;&quot;);
+    var sQuery = &quot;SELECT count(*) FROM &quot; + sObjName + &quot; &quot; + sCondition;
+    this.selectQuery(sQuery);
+
+    iValue = this.aTableData[0][0];
+    return iValue;
+  },
+
+  //for count of indexes/triggers of a table
+  getObjectCount: function(sTable, sDb) {
+    var sMaster = this.getPrefixedMasterName(sDb);
+    var sQuery = &quot;SELECT type, count(*) AS cnt FROM &quot; + sMaster + &quot; WHERE tbl_name = &#x27;&quot; + sTable + &quot;&#x27; AND type IN (&#x27;index&#x27;, &#x27;trigger&#x27;) GROUP BY type&quot;;
+
+    var oRow = {indexCount: 0, triggerCount: 0};
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        if (stmt.row.type == &#x27;index&#x27;)
+          oRow.indexCount = stmt.row.cnt;
+        if (stmt.row.type == &#x27;trigger&#x27;)
+          oRow.triggerCount = stmt.row.cnt;
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+    }
+    return oRow;
+  },
+  
+  emptyTable: function(sTableName) {
+    var sQuery = &quot;DELETE FROM &quot; + this.getPrefixedName(sTableName, &quot;&quot;);
+    return this.confirmAndExecute([sQuery], &quot;Delete All Records&quot;);
+  },
+
+  renameTable: function(sOldName, sNewName, sDb) {
+    var sQuery = &quot;ALTER TABLE &quot; + this.getPrefixedName(sOldName, sDb) + &quot; RENAME TO &quot; + SQLiteFn.quoteIdentifier(sNewName);
+    return this.confirmAndExecute([sQuery], &quot;Rename table &quot; + sOldName);
+  },
+
+  analyzeTable: function(sTableName) {
+    var sQuery = &quot;ANALYZE &quot; + this.getPrefixedName(sTableName, &quot;&quot;);
+    return this.confirmAndExecute([sQuery], &quot;Analyze Table&quot;);
+  },
+
+  //sObject = TABLE/INDEX/COLLATION;
+  reindexObject: function(sObjectType, sObjectName) {
+    var sQuery = &quot;REINDEX &quot; + this.getPrefixedName(sObjectName, &quot;&quot;);
+    return this.confirmAndExecute([sQuery], sQuery);
+  },
+
+  //sObjType = TABLE/INDEX/VIEW/TRIGGER;
+  dropObject: function(sObjType, sObjectName) {
+    var sQuery = &quot;DROP &quot; + sObjType + &quot; &quot; + this.getPrefixedName(sObjectName, &quot;&quot;);
+    return this.confirmAndExecute([sQuery], sQuery);
+  },
+
+  addColumn: function(sTable, aColumn) {
+    var aQueries = [];
+    var coldef = SQLiteFn.quoteIdentifier(aColumn[&quot;name&quot;]) + &quot; &quot; + aColumn[&quot;type&quot;];
+    if (aColumn[&quot;notnull&quot;])
+      coldef += &quot; NOT NULL &quot;;
+    if (aColumn[&quot;dflt_value&quot;] != &quot;&quot;) {
+      coldef += &quot; DEFAULT &quot; + aColumn[&quot;dflt_value&quot;];
+    }
+    var sTab = this.getPrefixedName(sTable, &quot;&quot;);
+    var sQuery = &quot;ALTER TABLE &quot; + sTab + &quot; ADD COLUMN &quot; + coldef;
+    return this.confirmAndExecute([sQuery], &quot;Add Column to Table &quot; + sTable);
+  },
+
+  alterColumn: function(sTable, oColumn) {
+    //get the columns
+    var cols = this.getTableInfo(sTable, &quot;&quot;);
+//    var oldCols = cols; //this seems to create an alias for cols instead of a copy
+    var oldCols = this.getTableInfo(sTable, &quot;&quot;);
+    //correct the cols array
+    for(var i = 0; i &lt; cols.length; i++) {
+      if (cols[i].name == oColumn.oldColName) {
+        cols[i].name = oColumn.newColName;
+        cols[i].type = oColumn.newColType;
+        cols[i].dflt_value = oColumn.newDefaultValue;
+      }
+    }
+    return this.modifyTable(sTable, oColumn.info, cols, oldCols);
+  },
+
+  dropColumn: function(sTable, oColumn) {
+    //get the columns
+    var cols = this.getTableInfo(sTable, &quot;&quot;);
+    //correct the cols array
+    for(var i = 0; i &lt; cols.length; i++) {
+      if (cols[i].name == oColumn.oldColName) {
+        cols.splice(i, 1);
+      }
+    }
+    return this.modifyTable(sTable, oColumn.info, cols, cols);
+  },
+
+  modifyTable: function(sTable, sInfo, cols, oldCols) {
+    //use oldCols to work out the colList to be used to select columns to be inserted in the altered table
+    var colList = [];
+    for(var i = 0; i &lt; oldCols.length; i++) {
+      var colname = oldCols[i].name;
+      colname = SQLiteFn.quoteIdentifier(colname);
+      colList.push(colname);
+    }
+    colList = colList.toString();
+
+    var aPK = [], aCols = [], aColNames = [];
+    for(var i = 0; i &lt; cols.length; i++) {
+      var colname = cols[i].name;
+      colname = SQLiteFn.quoteIdentifier(colname);
+      aColNames.push(colname);
+
+      var col = [i, colname];
+      aCols.push(col);
+      if(cols[i].pk == 1)
+        aPK.push(colname);
+    }
+
+    var aColDefs = [];
+    for(var i = 0; i &lt; aCols.length; i++) {
+      var j = aCols[i][0]
+      var datatype = cols[j].type;
+
+      var txtNull = &quot; NOT NULL &quot;;
+      if(cols[j].notnull == 0)
+        txtNull = &quot;&quot;;
+
+      //Issue #433: apply () around default value because pragma returns values without these; an extra set of () around the value will in any case be harmless
+      var defaultvalue = &quot;&quot;;
+      if(cols[j].dflt_value != null)
+        defaultvalue = &quot; DEFAULT (&quot; + cols[j].dflt_value + &quot;) &quot;;
+
+      var pk = &quot;&quot;;
+      if(aPK.length == 1 &amp;&amp; aPK[0] == aCols[i][1])
+        pk = &quot; PRIMARY KEY &quot;;
+      var col = aCols[i][1] + &quot; &quot; + datatype + pk + txtNull + defaultvalue;
+      aColDefs.push(col);
+    }
+    var coldef = aColDefs.toString();
+
+    //this is the primary key constraint on multiple columns
+    var constraintPK = &quot;&quot;;
+    if(aPK.length &gt; 1)
+      constraintPK = &quot;, PRIMARY KEY (&quot; + aPK.toString() + &quot;) &quot;;
+
+    coldef += constraintPK;
+
+////////////////////////////
+    var sTab = this.getPrefixedName(sTable, &quot;&quot;);
+    var sSomePrefix = &quot;oXHFcGcd04oXHFcGcd04_&quot;;
+    var sTempTable = this.getPrefixedName(sSomePrefix + sTable, &quot;&quot;);
+    var sTempTableName = SQLiteFn.quoteIdentifier(sSomePrefix + sTable);
+
+    var aQueries = [];
+    aQueries.push(&quot;ALTER TABLE &quot; + sTab + &quot; RENAME TO &quot; + sTempTableName);
+    aQueries.push(&quot;CREATE TABLE &quot; + sTab + &quot; (&quot; + coldef + &quot;)&quot;);    
+    aQueries.push(&quot;INSERT INTO &quot; + sTab + &quot; SELECT &quot; + colList + &quot; FROM &quot; + sTempTable);
+    aQueries.push(&quot;DROP TABLE &quot; + sTempTable);    
+
+    var bReturn = this.confirmAndExecute(aQueries, sInfo, &quot;confirm.otherSql&quot;);
+    return bReturn;
+  },
+
+  // selectQuery : execute a select query and store the results
+  selectQuery: function(sQuery, bBlobAsHex) {
+    this.aTableData = new Array();
+    this.aTableType = new Array();
+    // if aColumns is not null, there is a problem in tree display
+    this.aColumns = null;        
+    var bResult = false;
+ 
+    var timeStart = Date.now();
+    try { // mozIStorageStatement
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+    }
+    catch (e) {
+      // statement will be undefined because it throws error);
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+    
+    var iCols = 0;
+    var iType, colName;
+    try {
+      // do not use stmt.columnCount in the for loop, fetches the value again and again
+      iCols = stmt.columnCount;
+      this.aColumns = new Array();
+      var aTemp, aType;
+      for (var i = 0; i &lt; iCols; i++) {
+        colName = stmt.getColumnName(i);
+        aTemp = [colName, iType];
+        this.aColumns.push(aTemp);  
+      }
+    } catch (e) {
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+      var msg = this.onSqlError(e, &quot;Error while fetching column name: &quot; + colName, null, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+
+    var cell;
+    var bFirstRow = true;
+    try {
+      while (stmt.executeStep()) {
+        aTemp = [];
+        aType = [];
+        for (i = 0; i &lt; iCols; i++) {
+          iType = stmt.getTypeOfIndex(i);
+          if (bFirstRow) {
+            this.aColumns[i][1] = iType;
+          }
+          switch (iType) {
+            case stmt.VALUE_TYPE_NULL: 
+              cell = null;
+              break;
+            case stmt.VALUE_TYPE_INTEGER:
+              cell = stmt.getInt64(i);
+              break;
+            case stmt.VALUE_TYPE_FLOAT:
+              cell = stmt.getDouble(i);
+              break;
+            case stmt.VALUE_TYPE_TEXT:
+              cell = stmt.getString(i);
+              break;
+            case stmt.VALUE_TYPE_BLOB: //TODO: handle blob properly
+              if (bBlobAsHex) {
+                  var iDataSize = {value:0};
+                  var aData = {value:null};
+                  stmt.getBlob(i, iDataSize, aData);
+                  cell = SQLiteFn.blobToHex(aData.value);
+              }
+              else {
+                cell = this.mBlobPrefs.sStrForBlob;
+                if (this.mBlobPrefs.bShowSize) {
+                  var iDataSize = {value:0};
+                  var aData = {value:null};
+                  stmt.getBlob(i, iDataSize, aData);
+                  cell += &quot; (Size: &quot; + iDataSize.value + &quot;)&quot;;
+                  if (iDataSize.value &lt;= this.mBlobPrefs.iMaxSizeToShowData || this.mBlobPrefs.iMaxSizeToShowData &lt; 0) {
+                    if (this.mBlobPrefs.iHowToShowData == 1)
+                      cell = this.convertBlobToStr(aData.value);
+                    if (this.mBlobPrefs.iHowToShowData == 0)
+                      cell = SQLiteFn.blobToHex(aData.value);
+                  }
+                }
+              }
+              break;
+            default: sData = &quot;&lt;unknown&gt;&quot;; 
+          }
+          aTemp.push(cell);
+          aType.push(iType);
+        }
+        this.aTableData.push(aTemp);
+        this.aTableType.push(aType);
+        bFirstRow = false;
+      }
+      this.miTime = Date.now() - timeStart;
+    } catch (e) {
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+      var msg = this.onSqlError(e, &quot;Query: &quot; + sQuery + &quot; - executeStep failed&quot;, null, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+    stmt.finalize();
+    //Cu.reportError(&quot;finalize&quot;);
+    this.setErrorString();
+    return true;
+  },
+
+  exportTable: function(sTableName, sDbName, oFormat) {
+    var sQuery = &quot;SELECT * FROM &quot; + this.getPrefixedName(sTableName, sDbName);
+    this.selectQuery(sQuery, true);
+    var arrData = this.getRecords();
+    var arrColumns = this.getColumns();
+    var arrTypes = this.getRecordTypes();
+
+    if (oFormat.name == &quot;csv&quot;)
+      return getCsvFromArray(arrData, arrTypes, arrColumns, oFormat);
+  },
+
+  convertBlobToStr: function(aData) {
+    var str = &#x27;&#x27;;
+    for (var i = 0; i &lt; aData.length; i++) {
+      str += String.fromCharCode(aData[i]);
+    }
+    return str;
+  },
+
+  // selectBlob : execute a select query to return blob
+  selectBlob: function(sTable, sField, sWhere) {
+    var sQuery = [&quot;SELECT&quot;, SQLiteFn.quoteIdentifier(sField), &quot;FROM&quot;, this.getPrefixedName(sTable, &quot;&quot;), &quot;WHERE&quot;, sWhere].join(&#x27; &#x27;);
+    try { // mozIStorageStatement
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+    }
+    catch (e) {
+      // statement will be undefined because it throws error);
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+    
+    if (stmt.columnCount != 1)
+      return false;
+
+    var cell;
+    try {
+      stmt.executeStep();
+      if (stmt.getTypeOfIndex(0) != stmt.VALUE_TYPE_BLOB)
+        return false;
+
+      var iDataSize = {value:0};
+      var aData = {value:null};
+      stmt.getBlob(0, iDataSize, aData);
+      cell = &quot;BLOB (Size: &quot; + iDataSize.value + &quot;)&quot;;
+      //return [iDataSize.value, aData.value];
+      return aData.value;
+    } catch (e) {
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+      var msg = this.onSqlError(e, &quot;Query: &quot; + sQuery + &quot; - executeStep failed&quot;, null, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+    this.setErrorString();
+    return true;
+  },
+
+  // getTableRowidCol : execute a pragma query and return the results
+  getTableRowidCol: function(sTableName) {
+    var aCols = this.getTableInfo(sTableName, &quot;&quot;);
+    var aReturn = [];
+
+    var iNumPk = 0, iIntPk = 0;
+    for(var i = 0; i &lt; aCols.length; i++) {
+      var row = this.aTableData[i];
+      var type = aCols[i].type;
+      var pk = aCols[i].pk;
+      type = type.toUpperCase();
+      if(pk == 1) {
+        iNumPk++;
+        if (type == &quot;INTEGER&quot;) {
+          iIntPk++;
+          aReturn[&quot;name&quot;] = aCols[i].name;
+          aReturn[&quot;cid&quot;] = aCols[i].cid;
+        }
+      }
+    }
+    if (iNumPk == 1 &amp;&amp; iIntPk == 1)
+      return aReturn;
+    
+    aReturn[&quot;name&quot;] = &quot;rowid&quot;;
+    aReturn[&quot;cid&quot;] = 0;
+    return aReturn;
+  },
+
+  getPragmaSchemaQuery: function(sPragma, sObject, sDbName) {
+    if (sDbName == &quot;&quot;)
+      sDbName = this.mLogicalDbName;
+    return &quot;PRAGMA &quot; + SQLiteFn.quoteIdentifier(sDbName) + &quot;.&quot; + sPragma + &quot;(&quot; + SQLiteFn.quoteIdentifier(sObject) + &quot;)&quot;;
+  },
+
+  getIndexDetails: function(sIndexName, sDb) {
+    var aReturn = {tbl_name: &#x27;&#x27;, unique: 0};
+
+    var row = this.getMasterInfo(sIndexName, &#x27;&#x27;);
+    aReturn.tbl_name = row.tbl_name;
+
+    //to find whether duplicates allowed
+    var aList = this.getIndexList(aReturn.tbl_name, &quot;&quot;);
+    for(var i = 0; i &lt; aList.length; i++) {
+      if(aList[i].name == sIndexName)
+        aReturn.unique = aList[i].unique;
+    }
+    
+    return aReturn;
+  },
+    
+  select : function(file,sql,param) {
+    var ourTransaction = false;
+    if (this.dbConn.transactionInProgress) {
+      ourTransaction = true;
+      this.dbConn.beginTransactionAs(this.dbConn.TRANSACTION_DEFERRED);
+    }
+    var statement = this.dbConn.createStatement(sql);
+    //Cu.reportError(&quot;createStatement&quot;);
+    if (param) {
+      for (var m = 2, arg = null; arg = arguments[m]; m++) 
+        statement.bindUTF8StringParameter(m-2, arg);
+    }
+    try {
+      var dataset = [];
+      while (statement.executeStep()) {
+        var row = [];
+        for (var i = 0, k = statement.columnCount; i &lt; k; i++)
+          row[statement.getColumnName(i)] = statement.getUTF8String(i);
+
+        dataset.push(row);
+      }
+      // return dataset;
+    }
+    finally {
+      statement.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    if (ourTransaction) {
+      this.dbConn.commitTransaction();
+    }
+    return dataset;
+  },
+
+  executeAsync: function(aQueries) {
+    var timeStart = Date.now();
+
+    var stmt, aStmt = [];
+    for(var i = 0; i &lt; aQueries.length; i++) {
+      try {
+        stmt = this.dbConn.createStatement(aQueries[i]);
+        //Cu.reportError(&quot;createStatement&quot;);
+//        aStmt.push(stmt);
+        stmt.executeAsync(stmtCallback);
+      }
+      catch (e) {
+//        stmt.finalize();
+        //Cu.reportError(&quot;finalize&quot;);
+        this.setErrorString();
+        var msg = this.onSqlError(e, &quot;Error in createStatement: &quot; + aQueries[i], this.dbConn.lastErrorString, true);
+        Cu.reportError(msg);
+        return false;
+      }
+    }
+
+//    var stmtPending = this.dbConn.executeAsync(aStmt, aStmt.length, stmtCallback);
+//    this.setErrorString();
+
+    this.miTime = Date.now() - timeStart;
+    return true;
+  },  
+
+  executeTransaction: function(aQueries) {
+    //IS THIS NEEDED?
+    //commit, if some leftover transaction is in progress
+    if (this.dbConn.transactionInProgress)
+      this.dbConn.commitTransaction();
+
+    var timeStart = Date.now();
+    //begin a transaction, iff no transaction in progress
+    if (!this.dbConn.transactionInProgress)
+      this.dbConn.beginTransaction();
+
+    for(var i = 0; i &lt; aQueries.length; i++) {
+      try {
+        var statement = this.dbConn.createStatement(aQueries[i]);
+        statement.execute();
+      }
+      catch (e) {
+        if (statement != undefined)
+          statement.finalize();
+
+        this.setErrorString();
+        var msg = this.onSqlError(e, aQueries[i], this.dbConn.lastErrorString, true);
+        Cu.reportError(msg);
+        this.setErrorString();
+        if (this.dbConn.transactionInProgress) {
+          this.dbConn.rollbackTransaction();
+        }
+        return false;
+      }
+      finally {
+        if (statement != undefined)
+          statement.finalize();
+      }
+    }
+    //commit transaction, if reached here
+    if (this.dbConn.transactionInProgress)
+      this.dbConn.commitTransaction();
+
+    this.miTime = Date.now() - timeStart;
+    return true;
+  },  
+
+  // executeWithParams : execute a query with parameter binding
+  executeWithParams: function(sQuery, aParamData) {
+    //create the statement
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+    } catch (e) {
+      var msg = this.onSqlError(e, &quot;Create statement failed (executeWithParams): &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+    //bind the parameters
+    try {
+      for (var i = 0; i &lt; aParamData.length; i++) {
+        var aData = aParamData[i];
+        switch (aData[2]) {
+          case SQLiteTypes.NULL:
+            stmt.bindNullParameter(aData[0]);
+            break;
+          case SQLiteTypes.INTEGER:
+            stmt.bindInt64Parameter(aData[0], aData[1]);
+            break;
+          case SQLiteTypes.REAL:
+            stmt.bindDoubleParameter(aData[0], aData[1]);
+            break;
+          case SQLiteTypes.TEXT:
+            stmt.bindStringParameter(aData[0], aData[1]);
+            break;
+          case SQLiteTypes.BLOB:
+            if (typeof aData[1] == &quot;string&quot;)
+              aData[1] = this.textToBlob(aData[1]);
+            stmt.bindBlobParameter(aData[0], aData[1], aData[1].length);
+            break;
+        }
+      }
+    } catch (e) {
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+      var msg = this.onSqlError(e, &quot;Binding failed for parameter: &quot; + aData[0] + &quot;. data length = &quot; + aData[1].length, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+    //now execute the statement
+    try {
+      stmt.execute();
+    } catch (e) {
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+      var msg = this.onSqlError(e, &quot;Execute failed: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+
+    try {
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    } catch (e) {
+      var msg = this.onSqlError(e, &quot;Failed to reset/finalize&quot;, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+      return false;
+    }
+    return true;
+  },
+
+  manipulateF: function(sQuery, aParamType=[], aParamData=[]) {
+	this.aTableData = new Array();
+	this.aTableType = new Array();
+	//create the statement
+	if(sQuery.indexOf(&quot;%s&quot;)&gt;-1) {
+		var aPercent = sQuery.match(/%s/g);
+		for (var i=1; i&lt;=aPercent.length; i++) sQuery=sQuery.replace(/%s/,&quot;?&quot;+i);
+	}
+	try {
+		var stmt = this.dbConn.createStatement(sQuery);
+	} catch (e) {
+		var msg = this.onSqlError(e, &quot;Create statement failed (executeWithParams): &quot; + sQuery, this.dbConn.lastErrorString, true);
+		Cu.reportError(msg);
+		this.setErrorString();
+		return false;
+	}
+    //bind the parameters
+	try {
+		for (var i = 0; i &lt; aParamData.length; i++) {
+			var aData = [i,aParamData[i]];
+			var pType=aParamType[i];
+			if (typeof pType == &quot;string&quot;) pType = pType.toLowerCase();
+			switch (pType) {
+				case &quot;null&quot;:
+				case SQLiteTypes.NULL:
+					stmt.bindNullParameter(aData[0]);
+					break;
+				case &quot;integer&quot;:
+				case SQLiteTypes.INTEGER:
+					stmt.bindInt64Parameter(aData[0], aData[1]);
+					break;
+				case &quot;real&quot;:
+				case SQLiteTypes.REAL:
+					stmt.bindDoubleParameter(aData[0], aData[1]);
+					break;
+				case &quot;text&quot;:
+				case SQLiteTypes.TEXT:
+					stmt.bindStringParameter(aData[0], aData[1]);
+					break;
+				case &quot;blob&quot;:
+				case SQLiteTypes.BLOB:
+				if (typeof aData[1] == &quot;string&quot;) aData[1] = this.textToBlob(aData[1]);
+					stmt.bindBlobParameter(aData[0], aData[1], aData[1].length);
+					break;
+			}
+		}
+	} catch (e) {
+		stmt.finalize();
+		//Cu.reportError(&quot;finalize&quot;);
+		var msg = this.onSqlError(e, &quot;Binding failed for parameter: &quot; + aData[0] + &quot;. data length = &quot; + aData[1].length, this.dbConn.lastErrorString, true);
+		Cu.reportError(msg);
+		this.setErrorString();
+		return false;
+	}
+	//now execute the statement
+	
+	if(sQuery.substr(0,6).toLowerCase() != &quot;select&quot;) {
+		try {
+			stmt.execute();
+		} catch (e) {
+			stmt.finalize();
+			//Cu.reportError(&quot;finalize&quot;);
+			var msg = this.onSqlError(e, &quot;Execute failed: &quot; + sQuery, this.dbConn.lastErrorString, true);
+			Cu.reportError(msg);
+			this.setErrorString();
+			return false;
+		}
+		try {
+			stmt.finalize();
+		} catch (e) {
+			var msg = this.onSqlError(e, &quot;Failed to reset/finalize&quot;, this.dbConn.lastErrorString, true);
+			Cu.reportError(msg);
+			this.setErrorString();
+			return false;
+		}
+	} else {
+//		this.aTableData = new Array();
+//		this.aTableType = new Array();
+		var iCols = 0;
+		var iType, colName;
+		try {
+			// do not use stmt.columnCount in the for loop, fetches the value again and again
+			iCols = stmt.columnCount;
+			this.aColumns = new Array();
+			var aTemp, aType;
+			for (var i = 0; i &lt; iCols; i++) {
+				colName = stmt.getColumnName(i);
+				aTemp = [colName, iType];
+				this.aColumns.push(aTemp);  
+			}
+		} catch (e) {
+			stmt.finalize();
+			//Cu.reportError(&quot;finalize&quot;);
+			var msg = this.onSqlError(e, &quot;Error while fetching column name: &quot; + colName, null, true);
+			Cu.reportError(msg);
+			this.setErrorString();
+			return false;
+		}
+
+		var cell;
+		var bFirstRow = true;
+		try {
+			while (stmt.executeStep()) {
+				aTemp = [];
+				aType = [];
+				for (i = 0; i &lt; iCols; i++) {
+					iType = stmt.getTypeOfIndex(i);
+					if (bFirstRow) {
+						this.aColumns[i][1] = iType;
+					}
+					switch (iType) {
+						case stmt.VALUE_TYPE_NULL: 
+							cell = null;
+							break;
+						case stmt.VALUE_TYPE_INTEGER:
+							cell = stmt.getInt64(i);
+							break;
+						case stmt.VALUE_TYPE_FLOAT:
+							cell = stmt.getDouble(i);
+							break;
+						case stmt.VALUE_TYPE_TEXT:
+							cell = stmt.getString(i);
+							break;
+						case stmt.VALUE_TYPE_BLOB: //TODO: handle blob properly
+							if (bBlobAsHex) {
+								var iDataSize = {value:0};
+								var aData = {value:null};
+								stmt.getBlob(i, iDataSize, aData);
+								cell = SQLiteFn.blobToHex(aData.value);
+							}
+							else {
+								cell = this.mBlobPrefs.sStrForBlob;
+								if (this.mBlobPrefs.bShowSize) {
+									var iDataSize = {value:0};
+									var aData = {value:null};
+									stmt.getBlob(i, iDataSize, aData);
+									cell += &quot; (Size: &quot; + iDataSize.value + &quot;)&quot;;
+									if (iDataSize.value &lt;= this.mBlobPrefs.iMaxSizeToShowData || this.mBlobPrefs.iMaxSizeToShowData &lt; 0) {
+										if (this.mBlobPrefs.iHowToShowData == 1)
+										cell = this.convertBlobToStr(aData.value);
+										if (this.mBlobPrefs.iHowToShowData == 0)
+										cell = SQLiteFn.blobToHex(aData.value);
+									}
+								}
+							}
+							break;
+						default: sData = &quot;&lt;unknown&gt;&quot;; 
+					}
+					aTemp.push(cell);
+					aType.push(iType);
+				}
+				this.aTableData.push(aTemp);
+				this.aTableType.push(aType);
+				bFirstRow = false;
+			}
+		//      this.miTime = Date.now() - timeStart;
+		} catch (e) {
+			stmt.finalize();
+		//Cu.reportError(&quot;finalize&quot;);
+			var msg = this.onSqlError(e, &quot;Query: &quot; + sQuery + &quot; - executeStep failed&quot;, null, true);
+			Cu.reportError(msg);
+			this.setErrorString();
+			return false;
+		}
+		stmt.finalize();
+		//Cu.reportError(&quot;finalize&quot;);
+		this.setErrorString();
+	}
+	return true;
+  },
+
+  blobToHex: function(aData) {
+    var sQuery = &quot;SELECT quote(&quot; + aData + &quot;) AS outstr&quot;;
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        return stmt.row.outstr;
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    } catch (e) {
+      var msg = this.onSqlError(e, &quot;&quot;, null, false);
+      Cu.reportError(msg);
+    }
+  },
+
+  textToBlob: function(sData) {
+    var sHex = &quot;&quot;;
+    if (sData != null &amp;&amp; sData != &quot;&quot;) {
+      var sQuery = &quot;SELECT hex(&quot; + sData + &quot;) AS outhex&quot;;
+      try {
+        var stmt = this.dbConn.createStatement(sQuery);
+        //Cu.reportError(&quot;createStatement&quot;);
+        while (stmt.executeStep()) {
+          sHex = stmt.row.outhex;
+        }
+        stmt.finalize();
+        //Cu.reportError(&quot;finalize&quot;);
+      } catch (e) {
+        var msg = this.onSqlError(e, &quot;textToBlob: &quot; + sQuery, null, false);
+        Cu.reportError(msg);
+        //if failed, sData must be passed as a string
+        return this.textToBlob(SQLiteFn.quote(sData));
+      }
+    }
+
+    //now we have a hexadecimal string of even length
+    //convert it into blob
+    return SQLiteFn.hexToBlob(sHex);
+  },
+
+  confirmAndExecute: function(aQueries, sMessage, confirmPrefName, aParamData) {
+    var answer = true;
+    //function for confirmation should not be hardcoded
+    if (this.mFuncConfirm != null)
+      answer = (this.mFuncConfirm)(aQueries, sMessage, confirmPrefName);
+
+    if(answer) {
+      if (aParamData)
+        return this.executeWithParams(aQueries[0], aParamData);
+      else
+        return this.executeTransaction(aQueries);
+    }
+    return false;
+  },
+
+  executeWithoutConfirm: function(aQueries, aParamData) {
+    if (aParamData)
+      return this.executeWithParams(aQueries[0], aParamData);
+    else
+      return this.executeTransaction(aQueries);
+  },
+
+  executeSimpleSQLs: function(aQueries) {
+    for (var i=0; i &lt; aQueries.length; i++) {
+      this.dbConn.executeSimpleSQL(aQueries[i]);
+    }
+  },
+
+  attachDatabase: function(sName, sPath) {
+    if (sName == &#x27;main&#x27; || sName == &#x27;temp&#x27;)
+      return false;
+
+    var sQuery = &quot;ATTACH DATABASE &quot; + SQLiteFn.quote(sPath) + &quot; AS &quot; + SQLiteFn.quoteIdentifier(sName);
+    return this.selectQuery(sQuery);
+  },
+
+  onSqlError: function(ex, msg, SQLmsg, bAlert) {
+    msg = &quot;SQLiteManager: &quot; + msg;
+    if (SQLmsg != null)
+      msg += &quot; [ &quot; + SQLmsg + &quot; ]&quot;;
+
+    msg += &quot;\n&quot;;
+    msg += &quot;Exception Name: &quot; + ex.name + &quot;\n&quot; +
+          &quot;Exception Message: &quot; + ex.message;
+
+    if (bAlert)
+      this.alert(msg);
+    return msg;
+  },
+
+  alert: function(sMsg) {
+    this.promptService.alert(null, &quot;SQLite Manager Alert&quot;, sMsg);
+  },
+
+  logMessage: function(sMsg) {
+    this.consoleService.logStringMessage(&quot;SQLiteManager: &quot; + sMsg);
+  },
+
+  getAllowedOpsOnView: function(sViewName, sDbName) {
+    if (sDbName == &quot;&quot;)
+      sDbName = this.mLogicalDbName;
+
+    var aReturn = {&quot;delete&quot;: true, &quot;insert&quot;: true, &quot;update&quot;: true};
+    var aCols = this.getTableInfo(sViewName, sDbName);
+    var sQuery = &#x27;DELETE FROM &quot;&#x27; + sViewName + &#x27;&quot;&#x27;;
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      stmt.finalize();
+    }
+    catch (e) {
+      aReturn[&quot;delete&quot;] = false;
+      var msg = this.onSqlError(e, &quot;Error in SQL: &quot; + sQuery, this.dbConn.lastErrorString, false);
+      this.setErrorString();
+    }
+
+    var sQuery = &#x27;UPDATE &quot;&#x27; + sViewName + &#x27;&quot; SET &quot;&#x27; + aCols[0][&quot;name&quot;] + &#x27;&quot; = 1&#x27;;
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      stmt.finalize();
+    }
+    catch (e) {
+      aReturn[&quot;update&quot;] = false;
+      var msg = this.onSqlError(e, &quot;Error in SQL: &quot; + sQuery, this.dbConn.lastErrorString, false);
+      this.setErrorString();
+    }
+
+    var aVal = [];
+    for (var i = 0; i &lt; aCols.length; i++) {
+      aVal.push(1);
+    }
+    var sQuery = &#x27;INSERT INTO &quot;&#x27; + sViewName + &#x27;&quot; VALUES (&#x27; + aVal.join(&quot;,&quot;) + &#x27;)&#x27;;
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      stmt.finalize();
+    }
+    catch (e) {
+      aReturn[&quot;insert&quot;] = false;
+      var msg = this.onSqlError(e, &quot;Error in SQL: &quot; + sQuery, this.dbConn.lastErrorString, false);
+      this.setErrorString();
+    }
+
+    return aReturn;
+  },
+
+  getMasterInfo: function(sObjName, sDbName) {
+    var sTable = this.getPrefixedMasterName(sDbName);
+    var sQuery = &quot;SELECT * FROM &quot; + sTable + &quot; WHERE name = &#x27;&quot; + sObjName + &quot;&#x27;&quot;;
+    var aRows = [];
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        var oRow = {};
+
+        oRow.type = stmt.row.type;
+        oRow.name = stmt.row.name;
+        oRow.tbl_name = stmt.row.tbl_name;
+        oRow.rootpage = stmt.row.rootpage;
+        oRow.sql = stmt.row.sql;
+
+        aRows.push(oRow);
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+    }
+    if (aRows.length &gt; 0)
+      return aRows[0];
+    else
+      return aRows;
+  },
+
+/////////////////////////////////////////////
+//The following functions are for Pragmas to query the database schema
+/////////////////////////////////////////////
+
+//function for attached db list (not main &amp; temp)
+//returns all columns
+  getAttachedDbList: function() {
+    var sQuery = &quot;PRAGMA database_list&quot;;
+    var aRows = [];
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        if (stmt.row.seq &gt; 1) {//excludes main &amp; temp
+          var oRow = {};
+
+          oRow.seq = stmt.row.seq;
+          oRow.name = stmt.row.name;
+          oRow.file = stmt.row.file;
+
+          aRows.push(oRow);
+        }
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+    }
+    return aRows;
+  },
+
+//function for db list (main, temp and attached)
+//returns only name, not file
+  getDatabaseList: function() {
+    var sQuery = &quot;PRAGMA database_list&quot;;
+    var aRows = [&quot;main&quot;, &quot;temp&quot;];
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        if (stmt.row.seq &gt; 1) //sometimes, temp is not returned
+          aRows.push(stmt.row.name);
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+    }
+    return aRows;
+  },
+
+  getTableInfo: function(sTableName, sDbName) {
+    var sQuery = this.getPragmaSchemaQuery(&quot;table_info&quot;, sTableName, sDbName);
+    var aRows = [];
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        var oRow = {};
+
+        oRow.cid = stmt.row.cid;
+        oRow.name = stmt.row.name;
+        oRow.type = stmt.row.type;
+        oRow.notnull = stmt.row.notnull;
+        oRow.dflt_value = stmt.row.dflt_value;
+        oRow.pk = stmt.row.pk;
+
+        aRows.push(oRow);
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+    }
+    return aRows;
+  },
+
+  getIndexList: function(sTableName, sDbName) {
+    var sQuery = this.getPragmaSchemaQuery(&quot;index_list&quot;, sTableName, sDbName);
+    var aRows = [];
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        var oRow = {};
+
+        oRow.seq = stmt.row.seq;
+        oRow.name = stmt.row.name;
+        oRow.unique = stmt.row.unique;
+
+        aRows.push(oRow);
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+    }
+    return aRows;
+  },
+
+  getIndexInfo: function(sIndexName, sDbName) {
+    var sQuery = this.getPragmaSchemaQuery(&quot;index_info&quot;, sIndexName, sDbName);
+    var aRows = [];
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        var oRow = {};
+
+        oRow.seqno = stmt.row.seqno;
+        oRow.cid = stmt.row.cid;
+        oRow.name = stmt.row.name;
+
+        aRows.push(oRow);
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+    }
+    return aRows;
+  },
+
+  getCollationList: function(sIndexName, sDbName) {
+    var sQuery = &quot;PRAGMA collation_list&quot;;
+    var aRows = [];
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        var oRow = {};
+
+        oRow.seq = stmt.row.seq;
+        oRow.name = stmt.row.name;
+
+        aRows.push(oRow);
+      }
+      stmt.finalize();
+      //Cu.reportError(&quot;finalize&quot;);
+    }
+    catch (e) {
+      var msg = this.onSqlError(e, &quot;Likely SQL syntax error: &quot; + sQuery, this.dbConn.lastErrorString, true);
+      Cu.reportError(msg);
+      this.setErrorString();
+    }
+    return aRows;
+  },
+//////////////////////////////////////////////////////////////////
+  determineType: function(str) {
+    //depending on typeof is a safe bet for screening, but it is possible that regular expressions may be enough; especially because expressions like typeof(3+4), etc. will be integer but in sql they are strings. Also, literals like current_date, etc. are not to be treated as text while forming the sql statement
+/*
+    var sTypeof = &quot;text&quot;;
+    var sQuery = &quot;SELECT typeof(&quot; + str + &quot;) AS ttt&quot;;
+    try {
+      var stmt = this.dbConn.createStatement(sQuery);
+      //Cu.reportError(&quot;createStatement&quot;);
+      while (stmt.executeStep()) {
+        sTypeof = stmt.row.ttt;
+      }
+    } catch (e) {
+      sTypeof = &quot;text&quot;;
+    }
+*/
+
+    //any space makes the str as text. If this is not desirable, first do the following:
+    //str = str.trim();
+    var reInt = new RegExp(SQLiteRegex.mInteger);
+    if (reInt.test(str) || str == &quot;0&quot;)
+      return {type: SQLiteTypes.INTEGER, value: Number(str)};
+
+    var reReal = new RegExp(SQLiteRegex.mReal);
+    if (reReal.test(str) &amp;&amp; (str.indexOf(&#x27;.&#x27;) &gt;= 0 || str.indexOf(&#x27;e&#x27;) &gt;= 0 || str.indexOf(&#x27;E&#x27;) &gt;= 0)) {
+      //var reBadPrefix = new RegExp(&quot;^[-+]?[0][^\.][.]*$&quot;);
+      //if (!reBadPrefix.test(str))
+        return {type: SQLiteTypes.REAL, value: Number(str)};
+    }
+
+    var reBlob = new RegExp(SQLiteRegex.mBlob);
+    if (reBlob.test(str))
+      return {type: SQLiteTypes.BLOB, value: this.textToBlob(str)};
+
+    var reNull = new RegExp(SQLiteRegex.mNull);
+    if (reNull.test(str))
+      return {type: SQLiteTypes.NULL, value: str};
+
+    if (SQLiteFn.isSpecialLiteral(str))
+      return {type: SQLiteTypes.TEXT, value: str, isConstant: true};
+
+    return {type: SQLiteTypes.TEXT, value: SQLiteFn.quote(str)};
+  }
+};
+
+var SQLiteRegex = {
+  mNull: &quot;^[nN][uU][lL][lL]$&quot;,
+  mInteger: &quot;^[-+]?[1-9][0-9]*$&quot;,
+  mReal: &quot;^[-+]?[0-9]*[\.]?[0-9]+([eE][-+]?[0-9]+)?$&quot;,
+  mBlob: &quot;^[xX]\&#x27;([0-9a-fA-F][0-9a-fA-F])*\&#x27;$&quot;
+};
+
+var SQLiteFn = {
+  msQuoteChar: &#x27;&quot;&quot;&#x27;,//this allows for alternates like &#x27;[]&#x27;, etc.
+
+  maTypes: [&quot;null&quot;, &quot;integer&quot;, &quot;real&quot;, &quot;text&quot;, &quot;blob&quot;],
+
+  getTypeDescription: function(iType) {
+    return this.maTypes[iType];
+  },
+
+  setQuoteChar: function(sQuoteChar) {
+    this.msQuoteChar = sQuoteChar;
+  },
+
+  quoteIdentifier: function(str) {
+  //http://sqlite.org/lang_keywords.html
+  //&quot;keyword&quot; A keyword in double-quotes is an identifier
+  //assume str does not need any escaping, etc. Simply, enclose it.
+    return this.msQuoteChar[0] + str + this.msQuoteChar[1];
+  },
+
+  quote: function(str) {
+    if (typeof str == &quot;string&quot;)
+      str = str.replace(&quot;&#x27;&quot;, &quot;&#x27;&#x27;&quot;, &quot;g&quot;);
+    return &quot;&#x27;&quot; + str + &quot;&#x27;&quot;;
+  },
+
+  isSpecialLiteral: function(str) {
+    var sUp = str.toUpperCase();
+    if (sUp == &quot;CURRENT_DATE&quot; || sUp == &quot;CURRENT_TIME&quot; || sUp == &quot;CURRENT_TIMESTAMP&quot;)
+      return true;
+
+    return false;
+  },
+
+  makeSqlValue: function(str) {
+    var reNull = new RegExp(SQLiteRegex.mNull);
+    if (reNull.test(str))
+      return &quot;NULL&quot;;
+
+    var reReal = new RegExp(SQLiteRegex.mReal);
+    if (reReal.test(str))
+      return Number(str);
+
+    if (SQLiteFn.isSpecialLiteral(str))
+      return str.toUpperCase();
+
+    if (str.length == 0)
+      return &quot;NULL&quot;;
+
+    return this.quote(str);
+  },
+
+  analyzeDefaultValue: function(str) {
+    //if str corresponds to there being no default value, return null.
+    if (str == null)
+      return null;
+
+    var reNull = new RegExp(SQLiteRegex.mNull);
+    if (reNull.test(str))
+      return {type: SQLiteTypes.NULL, value: str, displayValue: &quot;NULL&quot;};
+
+    var reBlob = new RegExp(SQLiteRegex.mBlob);
+    if (reBlob.test(str))
+      return {type: SQLiteTypes.BLOB, value: this.textToBlob(str), displayValue: str};
+
+    var reInt = new RegExp(SQLiteRegex.mInteger);
+    if (reInt.test(str))
+      return {type: SQLiteTypes.INTEGER, value: Number(str), displayValue: Number(str)};
+
+    var reReal = new RegExp(SQLiteRegex.mReal);
+    if (reReal.test(str))
+      return {type: SQLiteTypes.REAL, value: Number(str), displayValue: Number(str)};
+
+    if (SQLiteFn.isSpecialLiteral(str))
+      return {type: SQLiteTypes.TEXT, value: str, displayValue: str, isConstant: true};
+
+    //if the first character is &#x27; or &quot;, then it is definitely text
+    var ch = str[0];
+    if (ch == &quot;&#x27;&quot; || ch == &#x27;&quot;&#x27;) {
+      var newStr = &quot;&quot;;
+      for (var i = 1; i &lt; str.length - 1; i++) {//TODO: use replace
+        if (i &gt;= 2)
+          if (str[i] == ch &amp;&amp; str[i-1] == ch)
+            continue;
+
+        newStr += str[i];
+      }
+      return {type: SQLiteTypes.TEXT, value: newStr, displayValue: newStr};
+    }
+
+    //this should be checked after integer because it includes integers too.
+    var reUnquotedText = new RegExp(&quot;^[0-9a-zA-Z_]+$&quot;);
+    if (reUnquotedText.test(str))
+      return {type: SQLiteTypes.TEXT, value: str, displayValue: str};
+
+    //otherwise hope that we have a number, but doing Number(str) may give NaN,
+    //e.g., for str = &quot;11 + 22/2&quot;, etc.
+    //avoid eval because of warning while loading at AMO
+    return {type: SQLiteTypes.REAL, value: str, displayValue: str};
+  },
+
+  blobToHex: function(aData) {
+    var hex_tab = &#x27;0123456789ABCDEF&#x27;;
+    var str = &#x27;&#x27;;
+    for (var i = 0; i &lt; aData.length; i++) {
+      str += hex_tab.charAt(aData[i] &gt;&gt; 4 &amp; 0xF) + hex_tab.charAt(aData[i] &amp; 0xF);
+    }
+    return &quot;X&#x27;&quot; + str + &quot;&#x27;&quot;;
+  },
+
+  hexToBlob: function(sHex) {
+    var aRet = [];
+    for (var i = 0; i &lt; sHex.length; i = i + 2) {
+      aRet.push(Number(&quot;0x&quot; + sHex.substr(i,2)));
+    }
+    return aRet;
+  }
+};
+
+//for export purposes
+function getCsvFromArray(arrData, arrTypes, arrColumns, oCsv) {
+  var strDelimiter = oCsv.delimiter;
+  if(oCsv.bColNames) {
+    var arrRow = [], types = [];
+    var i = 0;
+    for(var i in arrColumns) {
+      arrRow.push(arrColumns[i][0]);
+      types.push(SQLiteTypes.TEXT);
+    }
+    var data = getCsvRowFromArray(arrRow, types, oCsv);
+    aLines.push(data);
+  }
+
+  for(var i = 0; i &lt; arrData.length; i++) {
+    var arrRow = arrData[i];
+    var types = arrTypes[i];
+    var data = getCsvRowFromArray(arrRow, types, oCsv);
+    aLines.push(data);
+  }
+  return aLines.join(&quot;\n&quot;);
+}
+
+function getCsvRowFromArray(arrRow, arrTypes, oCsv) {
+  var strDelimiter = oCsv.delimiter;
+  if (arrTypes == []) {
+    for (var i = 0; i &lt; arrRow.length; i++)
+      arrTypes.push(SQLiteTypes.TEXT);
+  }
+
+  for (var i = 0; i &lt; arrRow.length; i++) {
+    switch (arrTypes[i]) {
+      case SQLiteTypes.INTEGER:
+      case SQLiteTypes.REAL:
+      case SQLiteTypes.BLOB:
+        break;
+      case SQLiteTypes.NULL: 
+        arrRow[i] = &quot;&quot;;
+        break;
+      case SQLiteTypes.TEXT:
+      default:
+        arrRow[i] = arrRow[i].replace(&quot;\&quot;&quot;, &quot;\&quot;\&quot;&quot;, &quot;g&quot;);
+        arrRow[i] = &#x27;&quot;&#x27; + arrRow[i] + &#x27;&quot;&#x27;;
+        break;
+    }
+  }
+  return arrRow.join(strDelimiter);
+}
+
+//arrays populated on 2011-01-16
+//SQLite Core Functions
+//http://sqlite.org/lang_corefunc.html
+var funcNamesCore = [&#x27;abs&#x27;, &#x27;changes&#x27;, &#x27;coalesce&#x27;, &#x27;glob&#x27;, &#x27;ifnull&#x27;, &#x27;hex&#x27;, &#x27;last_insert_rowid&#x27;, &#x27;length&#x27;, &#x27;like&#x27;, &#x27;load_extension&#x27;, &#x27;lower&#x27;, &#x27;ltrim&#x27;, &#x27;max&#x27;, &#x27;min&#x27;, &#x27;nullif&#x27;, &#x27;quote&#x27;, &#x27;random&#x27;, &#x27;randomblob&#x27;, &#x27;replace&#x27;, &#x27;round&#x27;, &#x27;rtrim&#x27;, &#x27;soundex&#x27;, &#x27;sqlite_compileoption_get&#x27;, &#x27;sqlite_compileoption_used&#x27;, &#x27;sqlite_source_id&#x27;, &#x27;sqlite_version&#x27;, &#x27;substr&#x27;, &#x27;total_changes&#x27;, &#x27;trim&#x27;, &#x27;typeof&#x27;, &#x27;upper&#x27;, &#x27;zeroblob&#x27;];
+
+//SQLite Aggregate Functions
+//http://sqlite.org/lang_aggfunc.html
+var funcNamesAggregate = [&#x27;avg&#x27;, &#x27;count&#x27;, &#x27;group_concat&#x27;, &#x27;max&#x27;, &#x27;min&#x27;, &#x27;sum&#x27;, &#x27;total&#x27;];
+
+//SQLite Date And Time Functions
+//http://sqlite.org/lang_datefunc.html
+var funcNamesDate = [&#x27;date&#x27;, &#x27;time&#x27;, &#x27;datetime&#x27;, &#x27;julianday&#x27;, &#x27;strftime&#x27;];
+
+var funcNamesAll = [];
+funcNamesAll = funcNamesAll.concat(funcNamesCore);
+funcNamesAll = funcNamesAll.concat(funcNamesAggregate);
+funcNamesAll = funcNamesAll.concat(funcNamesDate);
+
+exports.SQLiteTypes = SQLiteTypes;
+exports.SQLiteHandler = SQLiteHandler;
+exports.SQLiteFn = SQLiteFn;
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

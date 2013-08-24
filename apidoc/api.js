@@ -6,6 +6,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "gui",
         "main",
         "som",
+        "sqlite",
         "utils"
     ],
     "modules": [],

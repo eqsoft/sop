@@ -51,6 +51,8 @@
             
                 <li><a href="../classes/som.html">som</a></li>
             
+                <li><a href="../classes/sqlite.html">sqlite</a></li>
+            
                 <li><a href="../classes/utils.html">utils</a></li>
             
             </ul>
@@ -140,7 +142,35 @@
                     <ul class="index-list methods">
                         
                             <li class="index-item method private">
+                                <a href="#method_activateManager">activateManager</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
+                                <a href="#method_activatePlayer">activatePlayer</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
                                 <a href="#method_downgrade">downgrade</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
+                                <a href="#method_getMTab">getMTab</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
+                                <a href="#method_getPs">getPs</a>
 
                                 
                                 
@@ -182,6 +212,20 @@
                             </li>
                         
                             <li class="index-item method public">
+                                <a href="#method_openSomHome">openSomHome</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
+                                <a href="#method_openSomTab">openSomTab</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method public">
                                 <a href="#method_removeListener">removeListener</a>
 
                                 
@@ -209,6 +253,151 @@
         
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method_activateManager" class="method item private">
+    <h3 class="name"><code>activateManager</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/gui.js.html#l288"><code>gui.js:288</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Activates the Manager Tab</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_activatePlayer" class="method item private">
+    <h3 class="name"><code>activatePlayer</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>id</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/gui.js.html#l307"><code>gui.js:307</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Activates a Player Tab with the given id</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">id</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
 
                 
                     <div id="method_downgrade" class="method item private">
@@ -245,7 +434,7 @@
             
         
         
-        <a href="../files/gui.js.html#l95"><code>gui.js:95</code></a>
+        <a href="../files/gui.js.html#l97"><code>gui.js:97</code></a>
         
         </p>
 
@@ -262,6 +451,152 @@ and in a load context will shutdown all existing player and manager tabs and tri
 
     
 
+    
+
+    
+</div>
+
+                
+                    <div id="method_getMTab" class="method item private">
+    <h3 class="name"><code>getMTab</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Object</span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/gui.js.html#l268"><code>gui.js:268</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Returns the Manager Tab</p>
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    mtab
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_getPs" class="method item private">
+    <h3 class="name"><code>getPs</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Object</span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/gui.js.html#l278"><code>gui.js:278</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Returns the Object with all active player instances</p>
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    ps
+                
+            </div>
+        </div>
     
 
     
@@ -312,7 +647,7 @@ and in a load context will shutdown all existing player and manager tabs and tri
             
         
         
-        <a href="../files/gui.js.html#l123"><code>gui.js:123</code></a>
+        <a href="../files/gui.js.html#l125"><code>gui.js:125</code></a>
         
         </p>
 
@@ -403,7 +738,7 @@ The method ensures, that the environment runs and only one manager tab and only 
             
         
         
-        <a href="../files/gui.js.html#l163"><code>gui.js:163</code></a>
+        <a href="../files/gui.js.html#l174"><code>gui.js:174</code></a>
         
         </p>
 
@@ -494,7 +829,7 @@ Adds load and unload EventListeners to the DOMDocument.</p>
             
         
         
-        <a href="../files/gui.js.html#l191"><code>gui.js:191</code></a>
+        <a href="../files/gui.js.html#l200"><code>gui.js:200</code></a>
         
         </p>
 
@@ -653,6 +988,118 @@ Adds load and unload EventListeners to the DOMDocument.</p>
 </div>
 
                 
+                    <div id="method_openSomHome" class="method item public">
+    <h3 class="name"><code>openSomHome</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag public">public</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/gui.js.html#l326"><code>gui.js:326</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>opens an new or activate an existing SOM Instance (called from a player instance)</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_openSomTab" class="method item private">
+    <h3 class="name"><code>openSomTab</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/gui.js.html#l258"><code>gui.js:258</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Opens a Tab with SCORM-Offline-Manager</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_removeListener" class="method item public">
     <h3 class="name"><code>removeListener</code></h3>
 
@@ -743,7 +1190,7 @@ Adds load and unload EventListeners to the DOMDocument.</p>
             
         
         
-        <a href="../files/gui.js.html#l79"><code>gui.js:79</code></a>
+        <a href="../files/gui.js.html#l81"><code>gui.js:81</code></a>
         
         </p>
 

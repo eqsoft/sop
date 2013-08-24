@@ -51,6 +51,8 @@
             
                 <li><a href="../classes/som.html">som</a></li>
             
+                <li><a href="../classes/sqlite.html">sqlite</a></li>
+            
                 <li><a href="../classes/utils.html">utils</a></li>
             
             </ul>
@@ -164,9 +166,11 @@ main.on(&quot;downgrade&quot;, downgrade );
 windows.on(&quot;open&quot;,onWinOpen); // for event if manager or player is dragged to a new window
 tabs.on(&quot;ready&quot;,onTabReady);
 var prefs = require(&#x27;sdk/simple-prefs&#x27;).prefs;
-require(&#x27;sdk/simple-prefs&#x27;).on(&quot;startSOM&quot;, onPrefStartSom);
-require(&#x27;sdk/simple-prefs&#x27;).on(&quot;stopSOM&quot;, onPrefStopSom);
-require(&#x27;sdk/simple-prefs&#x27;).on(&quot;resetSOM&quot;, onPrefResetSom);
+var _ = require(&quot;sdk/l10n&quot;).get;
+require(&#x27;sdk/simple-prefs&#x27;).on(&quot;prefStartSOM&quot;, onPrefStartSom);
+require(&#x27;sdk/simple-prefs&#x27;).on(&quot;prefStopSOM&quot;, onPrefStopSom);
+require(&#x27;sdk/simple-prefs&#x27;).on(&quot;prefResetSOM&quot;, onPrefResetSom);
+require(&#x27;sdk/simple-prefs&#x27;).on(&quot;prefSkin&quot;, onPrefSkin);
  
 som.on(&quot;allLmChanged&quot;,renderAllLm);
 som.on(&quot;lmChanged&quot;,renderLm);
@@ -180,7 +184,7 @@ var reloadTries = 0;
  * @method startup
  **/ 
 function startup() {
-	if (prefs.autoStart) {
+	if (prefs.prefAutoStart) {
 		utils.log(&quot;gui startup&quot;);
 		if (mtab) {
 			utils.log(&quot;already started&quot;);
@@ -254,7 +258,16 @@ function init(tab) {
 			}
 			break;
 		default :
-			utils.log(&quot;external tab &quot; + tab.title + &quot;: no initialization&quot;);
+			var rw = winutils.getMostRecentBrowserWindow();
+			var w = rw.content.wrappedJSObject;
+			var metas = w.document.getElementsByTagName(&#x27;meta&#x27;); 
+			for (var i=0; i&lt;metas.length; i++) { 
+				if (metas[i].getAttribute(&quot;name&quot;) == &quot;require-sop-version&quot;) {
+					utils.log(&quot;connector request from: &quot; + tab.url); 
+					w.sopConnector = som.connectorFuncs;
+				} 
+			}
+			utils.log(&quot;external tab &quot; + tab.title + &quot;: no player or manager initialization&quot;);
 	}
 }
 
@@ -269,9 +282,6 @@ function init(tab) {
 function initManager(tab) {
 	utils.log(&quot;init manager&quot;);
 	mtab = tab;
-	if (prefs.pinTab) { // experimental
-		tab.pin();
-	}
 	var jq = data.url(&quot;som/jquery/jquery.js&quot;);
 	var bs = data.url(&quot;som/bootstrap/js/bootstrap.min.js&quot;);
 	var mwin = winutils.getMostRecentBrowserWindow();
@@ -284,6 +294,7 @@ function initManager(tab) {
 	mw.addEventListener(&quot;load&quot;, onManagerLoad, true);
 	mw.addEventListener(&quot;unload&quot;, onManagerUnload, true);
 	var mworker = tab.attach( { &#x27;contentScriptFile&#x27; : [jq,bs] }); 
+	onPrefSkin();
 }
 
 /**
@@ -304,18 +315,23 @@ function initPlayer(tab) {
 	var brWin = winutils.getMostRecentBrowserWindow();
 	var wrapWin = brWin.content.wrappedJSObject;
 	
-	if (wrapWin.document.title != env.globals.playerTitle) {
+	if (wrapWin.document.title != env.globals.playerTitle) { // ToDo: only instring of title
 		utils.log(&quot;window BUG: must reload tab...&quot;);
 		tab.activate();
-		tab.window.activate();
+		if (tab.window) {
+			tab.window.activate();
+		}
 		reloadTries ++
 		tab.reload();
 		return;
 	}
 	reloadTries = 0;
 	var id = getId(getParams(tab.url));
+	//wrapWin.document.title += &quot; &quot; + id; 
+	//utils.log(&quot;1 &quot; + typeof ps[id]);
+	//utils.log(&quot;findIn: &quot; + typeof ps + &quot; id: &quot; + id);
 	
-	if (utils.findIn(ps,id)) {
+	if (id in ps) { // deprecated: see httpObserver
 		utils.log(&quot;player instance exists: &quot; + id);
 		tab.close();
 		ps[id].win.activate();
@@ -334,39 +350,54 @@ function initPlayer(tab) {
 		brWin		: brWin,
 		wrapWin		: wrapWin
 	}
+	//utils.log(&quot;ps.length: &quot; + ps.length);
+	//utils.log(&quot;2 &quot; + typeof ps[id]);
 	getPlayerTemplates(); 
 }
 
-
+/**
+ * Opens a Tab with SCORM-Offline-Manager
+ * @private 
+ * @method openSomTab
+ **/ 
 function openSomTab() {
 	var url = data.url(&quot;som/som.html&quot;);
 	tabs.open({ url: url });
 }
 
+/**
+ * Returns the Manager Tab  
+ * @private 
+ * @method getMTab
+ * @return {Object} mtab
+ **/
 function getMTab() {
 	return mtab;
 }
 
+/**
+ * Returns the Object with all active player instances  
+ * @private 
+ * @method getPs
+ * @return {Object} ps
+ **/
 function getPs() {
 	return ps;
 }
- 
+
+/**
+ * Activates the Manager Tab  
+ * @private 
+ * @method activateManager
+ **/
 function activateManager() {
 	utils.log(&quot;activate Manager&quot;);
+	
 	try {
 		mtab.activate();
-		mtab.window.activate();
-	}
-	catch(e) {
-		utils.err(e);
-	}
-}
-
-function activatePlayer(id) {
-	utils.log(&quot;activate Player&quot;);
-	try {
-		ps[id].tab.activate();
-		ps[id].tab.window.activate();
+		if (mtab.window) {
+			mtab.window.activate();
+		}
 	}
 	catch(e) {
 		utils.err(e);
@@ -374,9 +405,47 @@ function activatePlayer(id) {
 }
 
 /**
+ * Activates a Player Tab with the given id  
+ * @private 
+ * @method activatePlayer
+ * @param {String} id 
+ **/
+function activatePlayer(id) {
+	utils.log(&quot;activate Player&quot;);
+	try {
+		ps[id].tab.activate();
+		if (ps[id].tab.window) {
+			ps[id].tab.window.activate();
+		}
+	}
+	catch(e) {
+		utils.err(e);
+	}
+}
+
+/**
+ * opens an new or activate an existing SOM Instance (called from a player instance)   
+ * @public 
+ * @method openSomHome
+ **/
+function openSomHome() {
+	if (mtab) {
+		utils.log(&quot;som already started.&quot;);
+		activateManager();
+	}
+	else {
+		openSomTab();
+	}
+}
+/**
  * prefs events
  */ 
 
+/**
+ * EventHandler for Preference Button &quot;Start SOM&quot;. 
+ * Close existing SOM Tab and starts a new one.
+ * @
+ **/   
 function onPrefStartSom() {
 	utils.log(&quot;onPrefStartSom&quot;);
 	onPrefStopSom();
@@ -402,6 +471,15 @@ function onPrefResetSom() {
 	openSomTab();
 }
 
+function onPrefSkin() {
+	utils.log(&quot;onPrefSkin: &quot; + prefs.prefSkin);
+	var skin = mw.document.getElementById(&quot;skin&quot;);
+	var href = skin.href;
+	var newHref = href.replace(/^(.*?\/)([a-zA-Z]+)(\/som\.css)$/, function(a,b,c,d) { return b + prefs.prefSkin + d } );
+	if (href != newHref) {
+		skin.href = newHref;
+	}
+}
 /**
  * manager and player events 
  */
@@ -502,6 +580,36 @@ function getId(params) {
 	}
 }
 
+function isPlayerUrl(url) {
+	var ret = /(localhost|127\.0\.0\.1).*?player.*/g.test(url);
+	if (ret) {
+		return getIdFromUrl(url); 
+	}
+	else {
+		return false;
+	}
+}
+
+function isPlayerOpen(id) {
+	return (id in ps);
+}
+
+function closeRecentTab() {
+	if (tabs.activeTab.url == &quot;about:blank&quot;) { //close only empty invalid windows opened with a href link
+		tabs.activeTab.close();
+		utils.log(&quot;closeRecentTab: &quot; + tabs.activeTab.title + &quot; url: &quot; + tabs.activeTab.url);
+	}
+}
+
+function getIdFromUrl(url) {
+	try {
+		return getId(getParams(url));
+	}
+	catch(e) {
+		utils.err(e);
+	}
+}
+
 function getManagerParams() {
 	return JSON.stringify(getParams(mw));
 }
@@ -511,14 +619,13 @@ function getPlayerParams(win) {
 }
 
 function getParams(win) { // window object or url string
-	var w = winutils.getMostRecentBrowserWindow();
 	var qs = {};
 	var queryString;
 	queryString = (typeof win === &quot;string&quot;) ? win.split(&quot;\?&quot;)[1] : win.document.location.search.slice(1);
 	var re = /([^&amp;=]+)=([^&amp;]*)/g;
 	var m;
 	while (m = re.exec(queryString)) {
-		qs[w.decodeURIComponent(m[1])] = w.decodeURIComponent(m[2]);
+		qs[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
 	}
 	return qs;
 }
@@ -538,26 +645,33 @@ function getPlayerTemplates() {
 	// no templates
 }
 
-function renderAllLm() { 
+function renderAllLm() {
 	if (!mw) {
 		return;
 	}
-	utils.log(&quot;renderAllLm&quot;); // ToDo: Problem of second installation if player is open lm will be not rendered: empty page ?? 
+	//utils.log(&quot;renderLm&quot;);
+	//utils.log(&quot;renderAllLm&quot;); // ToDo: Problem of second installation if player is open lm will be not rendered: empty page ?? 
 	var lms = som.getLmsObj();
 	var str = &quot;&quot;;
 	var tmp = mts.lms;
+	
 	for each (var lm in lms) {
-		var id = lm.client + &quot;_&quot; + lm.obj_id;
-		var player = (lm.scorm_version == &quot;1.2&quot;) ? &quot;player12.htm&quot; : &quot;player2004.html&quot;
+		var id = lm.client + &quot;_&quot; + lm.obj_id; // ToDo: use som.getOfflineUrl
+		/*
+		var player = (lm.scorm_version == &quot;1.2&quot;) ? &quot;player12.html&quot; : &quot;player2004.html&quot;
 		var url = &quot;http://localhost:50012/&quot; + player + &quot;?client=&quot; + lm.client + &quot;&amp;obj_id=&quot; + lm.obj_id;
-		var s = tmp.replace(/__\#VAR_LINK__/g, url);
-		s = s.replace(/__\#VAR_CRSID__/g, id);
-		s = s.replace(/__\#VAR_TITLE__/g,lm.title);
-		s = s.replace(/__\#VAR_CRSDETAILS__/g,&quot;detail_&quot; + lm.client + &quot;_&quot; + lm.obj_id);
-		var st = (lm.status) ? lm.status.replace(&quot;trac_&quot;,&quot;&quot;) : &quot;not_attempted&quot;;
-		s = s.replace(/__\#VAR_STATUSICON__/g,&quot;images/&quot; + st + &quot;.png&quot;);
-		s = s.replace(/__\#VAR_STATUSTITLE__/g,st);
-		str += s;
+		*/
+		var st = (lm.status) ? lm.status.replace(&quot;trac_&quot;,&quot;&quot;) : &quot;not_attempted&quot;; 
+		var link = som.getOfflineUrl(id);
+		var data = {
+			LINK 		: link,
+			CRSID 		: id,
+			TITLE 		: lm.title,
+			CRSDETAILS 	: &quot;detail_&quot; + lm.client + &quot;_&quot; + lm.obj_id,
+			STATUSICON	: &quot;images/&quot; + st + &quot;.png&quot;,
+			STATUSTITLE	: st
+		}
+		str += getTemplateContent(tmp,data);
 		str = renderLm(id,str);
 	}
 	var elLm = mw.document.getElementById(&quot;acLm&quot;);
@@ -571,16 +685,24 @@ function renderLm(id,str=false) {
 	var lms = som.getLmsObj();
 	var lm = lms[id];
 	var tmp = mts.lm;
-	tmp = tmp.replace(/__\#VAR_DESCRIPTION__/g,lm.description);
-	var tt = (lm.total_time !== &quot;&quot;) ? mw.decodeURIComponent(lm.total_time) : &quot;&quot;;
-	tmp = tmp.replace(/__\#VAR_TOTALTIME__/g,tt);
-	
+	var tt = (lm.total_time !== &quot;&quot;) ? decodeURIComponent(lm.total_time) : &quot;&quot;;
+	var data = {
+		DESCRIPTION 	: lm.description,
+		TOTALTIME 	: tt
+	};
+	tmp = getTemplateContent(tmp,data);
 	if (str) { // comming from renderAllLm
-		return str.replace(/__\#TMP_LM__/g,tmp); 
+		data = { LM : tmp };
+		return getTemplateContent(str,data);
 	}
 	else {
-		var elLmDetail = mw.document.getElementById(&quot;aciLm&quot;);
-		elLmDetail.innerHTML = tmp;
+		try {
+			var elLmDetail = mw.document.getElementById(&quot;aciLm&quot;);
+			elLmDetail.innerHTML = tmp;
+		}
+		catch(e) {
+			utils.err(e);
+		}
 	}
 }
 
@@ -597,10 +719,14 @@ function renderLmStatus(id,status) {
 	img.src = &quot;images/&quot; + status + &quot;.png&quot;;
 }
 
+function getTemplateContent(str,data) {
+	return str.replace(/__\#VAR_([a-zA-Z]+)__/g, function(a,b){return(undefined===data[b])?a:data[b]}).replace(/__\#LNG_([a-zA-Z]+)__/g,function(a,b){return _(b);});
+}
+
 /**
  * gui actions
  */
-  
+   
 function getData(statement, params, asRecordObject) {
 	return db.getData(statement, params, false, asRecordObject);
 }
@@ -616,14 +742,29 @@ var managerFuncs = {
 	}
 } 
 
+/** 
+ * connector functions
+ **/
+
+function getSopVersion() {
+	return &quot;0.1&quot;;
+}
+
+function getOfflineUrl(id) {
+	var url = som.getOfflineUrl();
+	return url;
+}
+
 var playerFuncs = {
 	getParams	: getParams,
 	getPlayerParams : getPlayerParams,
+	openSomHome	: openSomHome,
 	getData		: getData,
 	setData		: setData,	
 	__exposedProps__ : {
 		getParams : &quot;r&quot;,
 		getPlayerParams : &quot;r&quot;,
+		openSomHome : &quot;r&quot;,
 		getData : &quot;r&quot;,
 		setData : &quot;r&quot;
 	}
@@ -631,6 +772,11 @@ var playerFuncs = {
 
 /* late binding of exports and exposed props */
 exports.getParams = getParams;
+exports.getIdFromUrl = getIdFromUrl;
+exports.isPlayerOpen = isPlayerOpen;
+exports.isPlayerUrl = isPlayerUrl;
+exports.closeRecentTab = closeRecentTab;
+exports.activatePlayer = activatePlayer; 
 
     </pre>
 </div>
