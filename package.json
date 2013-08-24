@@ -10,29 +10,46 @@
 	[{
 		"description": "Autostart SCORM-Offline-Manager",
 		"type": "bool",
-		"name": "autoStart",
+		"name": "prefAutoStart",
 		"value": true,
 		"title": "Autostart SOM"
+	},
+	{
+		"description": "SCORM-Offline-Manager Skin",
+		"type": "menulist",
+		"name": "prefSkin",
+		"value": "ilias",
+		"title": "SCORM-Offline-Manager Skin",
+		"options": [
+			{
+			    "value": "ilias",
+			    "label": "ilias"
+			},
+			{
+			    "value": "frm",
+			    "label": "frm"
+			}
+		    ]
 	},
 	{
 		"description": "Start SCORM-Offline-Manager",
 		"type": "control",
 		"label": "Start SOM",
-		"name": "startSOM",
+		"name": "prefStartSOM",
 		"title": "Start SOM"
 	},
 	{
 		"description": "Stop SCORM-Offline-Manager",
 		"type": "control",
 		"label": "Stop SOM",
-		"name": "stopSOM",
+		"name": "prefStopSOM",
 		"title": "Stop SOM"
 	},
 	{
 		"description": "Reset to Factory Data",
 		"type": "control",
 		"label": "Reset to Factory Data",
-		"name": "resetSOM",
+		"name": "prefResetSOM",
 		"title": "Reset SOM"
 	}]
 }
