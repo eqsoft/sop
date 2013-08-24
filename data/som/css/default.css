@@ -1,0 +1,23 @@
+#somHeader {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+#somLogo64 {
+	float: left;
+	background-image: url(logo_64.png);
+	background-repeat: no-repeat;
+	width: 64px;
+	height: 64px;
+}
+#somTitle {
+	position: relative;
+	font-weight: bold;
+	margin-top: 20px;
+	margin-left: 80px;
+}
+
+.somCourseTitle {
+	margin-left: 10px;
+	margin-right: 15px;
+}
+
