@@ -86,7 +86,8 @@ div.dragbar{
 				if(d[0].init_data && d[0].init_data!="")
 				{
 					IliasScormVars=JSON.parse(d[0].init_data);
-					IliasScormData=JSON.parse(d[0].user_data);
+					IliasScormData={};
+					if (d[0].user_data !="") JSON.parse(d[0].user_data);
 					IliasScormResources=JSON.parse(d[0].resources);
 					if (IliasScormResources.length==1){
 						document.getElementById("leftView").style.width="0";
