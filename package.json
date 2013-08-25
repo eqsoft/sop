@@ -18,7 +18,7 @@
 		"description": "SCORM-Offline-Manager Skin",
 		"type": "menulist",
 		"name": "prefSkin",
-		"value": "ilias",
+		"value": "frm",
 		"title": "SOM Skin",
 		"options": [
 			{

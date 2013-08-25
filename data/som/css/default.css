@@ -1,7 +1,12 @@
+#somBody {
+	padding: 5%;
+	width: 80%;
+}
+
 #somHeader {
-	margin-top: 20px;
 	margin-bottom: 20px;
 }
+
 #somLogo64 {
 	float: left;
 	background-image: url(logo_64.png);
@@ -14,6 +19,10 @@
 	font-weight: bold;
 	margin-top: 20px;
 	margin-left: 80px;
+}
+
+#acLm {
+	width: 80%;
 }
 
 .somCourseTitle {
