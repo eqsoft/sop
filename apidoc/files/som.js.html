@@ -114,6 +114,7 @@ module.metadata = {
 const {Cc, Ci, Cu, Cr, Cm, components} = require(&quot;chrome&quot;);
 Cu.import(&quot;resource://gre/modules/FileUtils.jsm&quot;);
 Cu.import(&quot;resource://gre/modules/NetUtil.jsm&quot;);
+
 /**
  * @public
  * @method on
@@ -379,6 +380,13 @@ function pushTracking(id, burl, callback) {
 	// ToDo
 }
 
+/**
+ * get the offline url for LM
+ * @public
+ * @method getOfflineUrl
+ * @param {String} id
+ * @return url
+ **/ 
 function getOfflineUrl(id) {
 	env.run();
 	var lm = getLmById(id,false);
@@ -394,13 +402,28 @@ function getOfflineUrl(id) {
 	return url;
 }
 
+/**
+ * ASCII to Base64
+ * @public
+ * @method atoB
+ * @param {String} txt
+ * @return {String} base64
+ **/ 
 function atoB(txt) {
 	return base64.encode(txt);
 }
 
+/**
+ * Base64 to ASCII 
+ * @public
+ * @method btoA
+ * @param {String} txt
+ * @return {String} ASCII
+ **/ 
 function btoA (txt) {
 	return base64.decode(txt);
 }
+
 //env.on(&quot;run&quot;, function() { getAllLm }); needed??
 db.on(&quot;lmUserDataChanged&quot;, function(id) {
 	utils.log(&quot;lmUserDataChanged: &quot; + id);
@@ -419,13 +442,13 @@ var connectorFuncs = {
 		atoB		: &quot;r&quot;,
 		btoA		: &quot;r&quot;,
 		importLm	: &quot;r&quot;,
-		importTracking	: &quot;r&quot;
+		importTracking	: &quot;r&quot;,
+		pushTracking	: &quot;r&quot;
 	}
 }
 
 exports.getAllLm = getAllLm;
 exports.getLmById = getLmById;
-exports.getLmsObj = getLmsObj;
 exports.getLmsObj = getLmsObj;
 exports.isImportRequest = isImportRequest;
 exports.getOfflineUrl = getOfflineUrl;

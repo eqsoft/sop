@@ -414,13 +414,7 @@
         },
         {
             "file": "env.js",
-            "line": 325,
-            "description": "gui events",
-            "class": "env"
-        },
-        {
-            "file": "env.js",
-            "line": 329,
+            "line": 328,
             "description": "unloads the player",
             "access": "private",
             "tagname": "",
@@ -430,7 +424,7 @@
         },
         {
             "file": "env.js",
-            "line": 340,
+            "line": 339,
             "description": "unloads the manager",
             "access": "private",
             "tagname": "",
@@ -440,7 +434,7 @@
         },
         {
             "file": "env.js",
-            "line": 351,
+            "line": 350,
             "description": "base unload function for player and manager",
             "access": "private",
             "tagname": "",
@@ -450,7 +444,7 @@
         },
         {
             "file": "env.js",
-            "line": 369,
+            "line": 368,
             "description": "checks if any player and manager instances are open, if not the environment will be stopped.",
             "access": "private",
             "tagname": "",
@@ -460,13 +454,7 @@
         },
         {
             "file": "env.js",
-            "line": 386,
-            "description": "server",
-            "class": "env"
-        },
-        {
-            "file": "env.js",
-            "line": 389,
+            "line": 388,
             "description": "starts the internal webserver",
             "access": "private",
             "tagname": "",
@@ -482,18 +470,12 @@
         },
         {
             "file": "env.js",
-            "line": 420,
+            "line": 419,
             "description": "stops the internal webserver",
             "access": "private",
             "tagname": "",
             "itemtype": "method",
             "name": "stopServer",
-            "class": "env"
-        },
-        {
-            "file": "env.js",
-            "line": 433,
-            "description": "addon lifecycle events",
             "class": "env"
         },
         {
@@ -525,19 +507,7 @@
         },
         {
             "file": "gui.js",
-            "line": 36,
-            "description": "sdk packages",
-            "class": "gui"
-        },
-        {
-            "file": "gui.js",
-            "line": 46,
-            "description": "custom modules and variables",
-            "class": "gui"
-        },
-        {
-            "file": "gui.js",
-            "line": 81,
+            "line": 78,
             "description": "EventListener for startup event, will open a som tab if prefs.autoStart is set",
             "access": "private",
             "tagname": "",
@@ -547,7 +517,7 @@
         },
         {
             "file": "gui.js",
-            "line": 97,
+            "line": 94,
             "description": "EventListener for downgrade event, will stop the environment components in an unload context \nand in a load context will shutdown all existing player and manager tabs and trigger a new startup()",
             "access": "private",
             "tagname": "",
@@ -557,7 +527,7 @@
         },
         {
             "file": "gui.js",
-            "line": 125,
+            "line": 122,
             "description": "Triggered on tabs.on(\"open\") event.\nChecks if the window title is a player or manager title and initializes the component.\nThe method ensures, that the environment runs and only one manager tab and only one learning module instance is running.",
             "access": "private",
             "tagname": "",
@@ -574,7 +544,7 @@
         },
         {
             "file": "gui.js",
-            "line": 174,
+            "line": 171,
             "description": "Triggered on tabs.on(\"open\") event and window.title = managerTitle. \nInjects the necessary communication objects and gui scripts to the content.\nAdds load and unload EventListeners to the DOMDocument.",
             "access": "private",
             "tagname": "",
@@ -591,7 +561,7 @@
         },
         {
             "file": "gui.js",
-            "line": 200,
+            "line": 197,
             "description": "Triggered on tabs.on(\"open\") event and window.title = playerTitle. \nInjects the necessary communication objects and gui scripts to the content. \nAdds load and unload EventListeners to the DOMDocument.",
             "access": "private",
             "tagname": "",
@@ -608,7 +578,7 @@
         },
         {
             "file": "gui.js",
-            "line": 258,
+            "line": 255,
             "description": "Opens a Tab with SCORM-Offline-Manager",
             "access": "private",
             "tagname": "",
@@ -618,7 +588,7 @@
         },
         {
             "file": "gui.js",
-            "line": 268,
+            "line": 265,
             "description": "Returns the Manager Tab",
             "access": "private",
             "tagname": "",
@@ -632,7 +602,7 @@
         },
         {
             "file": "gui.js",
-            "line": 278,
+            "line": 275,
             "description": "Returns the Object with all active player instances",
             "access": "private",
             "tagname": "",
@@ -646,7 +616,7 @@
         },
         {
             "file": "gui.js",
-            "line": 288,
+            "line": 285,
             "description": "Activates the Manager Tab",
             "access": "private",
             "tagname": "",
@@ -656,7 +626,7 @@
         },
         {
             "file": "gui.js",
-            "line": 307,
+            "line": 304,
             "description": "Activates a Player Tab with the given id",
             "access": "private",
             "tagname": "",
@@ -673,7 +643,7 @@
         },
         {
             "file": "gui.js",
-            "line": 326,
+            "line": 323,
             "description": "opens an new or activate an existing SOM Instance (called from a player instance)",
             "access": "public",
             "tagname": "",
@@ -684,55 +654,333 @@
         {
             "file": "gui.js",
             "line": 340,
-            "description": "prefs events",
+            "description": "eventHandler for preference button \"Start SOM\". \nclose existing som tab and starts a new one.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onPrefStartSom",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 344,
-            "description": "EventHandler for Preference Button \"Start SOM\". \nClose existing SOM Tab and starts a new one.",
+            "line": 353,
+            "description": "eventHandler for preference button \"Stop SOM\". \nclose existing som tab and window references and stops the environment",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onPrefStopSom",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 383,
-            "description": "manager and player events",
+            "line": 370,
+            "description": "eventHandler for preference button \"Reset SOM\". \nstop som, reset to the profile factory setting and start som",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onPrefResetSom",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 416,
-            "description": "window events",
+            "line": 386,
+            "description": "eventHandler for preference button \"SOM Skin\". \nswitches the som skin css on the fly (android: need a firefox restart)",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onPrefSkin",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 438,
-            "description": "tab events",
+            "line": 405,
+            "description": "eventHandler bound to the manager dom window (mw) load event. \nfetches all learning modules and if player instances of lms are open, the status signal is set to \"running\"",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onManagerLoad",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 459,
-            "description": "misc functions",
+            "line": 420,
+            "itemtype": "event",
+            "name": "managerUnload",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 533,
-            "description": "templates",
+            "line": 423,
+            "description": "eventHandler bound to the manager dom window (mw) unload event. \nsetting the global variables mw and mtab to null and emitting managerUnload event",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onManagerUnload",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 626,
-            "description": "gui actions",
+            "line": 437,
+            "itemtype": "event",
+            "name": "playerLoad",
             "class": "gui"
         },
         {
             "file": "gui.js",
-            "line": 645,
-            "description": "connector functions",
+            "line": 440,
+            "description": "eventHandler bound to the players dom window (ps[p.id].wrapWin) load event. \nrendering running status of actual lm and emitting playerLoad event",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onPlayerLoad",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 453,
+            "itemtype": "event",
+            "name": "playerUnload",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 456,
+            "description": "eventHandler bound to the players dom window (ps[p.id].wrapWin) unload event. \ndeleting ps[p.id] object, rendering running status and emitting playerUnload event",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onPlayerUnload",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 473,
+            "description": "eventhandler triggered on all new window.open events\nneeded for controlling a player window dragged to a new browser window (see checkNewWindow)",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onWinOpen",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 486,
+            "description": "eventhandler triggered on all window.close events\nonly event logging",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onWinClose",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 497,
+            "description": "eventhandler triggered on all window.activate events\nonly event logging",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onWinActivate",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 508,
+            "description": "eventhandler triggered on all window.deactivate events\nonly event logging",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onWinDeactivate",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "",
+                    "type": "Window Object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 522,
+            "description": "eventhandler triggered on all tab.ready events\ntriggers init(tab) for initialization of manager and player tabs",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onTabReady",
+            "params": [
+                {
+                    "name": "tab",
+                    "description": "",
+                    "type": "Tab Object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 535,
+            "description": "eventhandler triggered on all tab.close events\nonly event logging",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onTabClose",
+            "params": [
+                {
+                    "name": "tab",
+                    "description": "",
+                    "type": "Tab Object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 547,
+            "description": "eventhandler triggered on all tab.activate events\nonly event logging",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onTabActivate",
+            "params": [
+                {
+                    "name": "tab",
+                    "description": "",
+                    "type": "Tab Object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 559,
+            "description": "eventhandler triggered on all tab.deactivate events\nonly event logging",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "onTabDeactivate",
+            "params": [
+                {
+                    "name": "tab",
+                    "description": "",
+                    "type": "Tab Object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 573,
+            "description": "dragging an existing player tab to a new browser window needs updating the ps[p.id] window and tab objects",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "checkNewWindow",
+            "params": [
+                {
+                    "name": "tab",
+                    "description": "",
+                    "type": "Tab Object"
+                },
+                {
+                    "name": "brWin",
+                    "description": "",
+                    "type": "BrowserWindow object"
+                }
+            ],
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 592,
+            "description": "returns an lm.id created from querystring paramters",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "getId",
+            "params": [
+                {
+                    "name": "params",
+                    "description": "",
+                    "type": "Params Object"
+                }
+            ],
+            "return": {
+                "description": "id",
+                "type": "String"
+            },
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 609,
+            "description": "returns true if url is a player url",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "isPlayerUrl",
+            "params": [
+                {
+                    "name": "url",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "p.id if url is a player url else false",
+                "type": "String|Boolean"
+            },
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 627,
+            "description": "returns true if url is a player url",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "isPlayerOpen",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "true if url is a player with id is open",
+                "type": "Boolean"
+            },
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 639,
+            "description": "closes recent empty tabs",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "closeRecentTab",
+            "class": "gui"
+        },
+        {
+            "file": "gui.js",
+            "line": 652,
+            "description": "get player id from url",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "getIdFromUrl",
+            "params": [
+                {
+                    "name": "url",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "player id else false",
+                "type": "String|Boolean"
+            },
             "class": "gui"
         },
         {
@@ -865,7 +1113,7 @@
         },
         {
             "file": "som.js",
-            "line": 17,
+            "line": 18,
             "access": "public",
             "tagname": "",
             "itemtype": "method",
@@ -874,7 +1122,7 @@
         },
         {
             "file": "som.js",
-            "line": 21,
+            "line": 22,
             "access": "public",
             "tagname": "",
             "itemtype": "method",
@@ -883,7 +1131,7 @@
         },
         {
             "file": "som.js",
-            "line": 25,
+            "line": 26,
             "access": "public",
             "tagname": "",
             "itemtype": "method",
@@ -892,14 +1140,14 @@
         },
         {
             "file": "som.js",
-            "line": 48,
+            "line": 49,
             "itemtype": "event",
             "name": "allLmChanged",
             "class": "som"
         },
         {
             "file": "som.js",
-            "line": 51,
+            "line": 52,
             "description": "gets all imported Learning-Modules (SCORM-Courses) from db",
             "access": "public",
             "tagname": "",
@@ -913,14 +1161,14 @@
         },
         {
             "file": "som.js",
-            "line": 72,
+            "line": 73,
             "itemtype": "event",
             "name": "lmChanged",
             "class": "som"
         },
         {
             "file": "som.js",
-            "line": 75,
+            "line": 76,
             "description": "gets a Learning-Module by id from db or a row param",
             "access": "public",
             "tagname": "",
@@ -951,7 +1199,7 @@
         },
         {
             "file": "som.js",
-            "line": 124,
+            "line": 125,
             "description": "returns the Learning-Modules Object",
             "access": "public",
             "tagname": "",
@@ -965,7 +1213,7 @@
         },
         {
             "file": "som.js",
-            "line": 136,
+            "line": 137,
             "description": "checks if outgoing localhost request is importRequest from host",
             "access": "public",
             "tagname": "",
@@ -982,7 +1230,7 @@
         },
         {
             "file": "som.js",
-            "line": 148,
+            "line": 149,
             "description": "imports a Learning Module Content Zip",
             "access": "public",
             "tagname": "",
@@ -999,7 +1247,7 @@
         },
         {
             "file": "som.js",
-            "line": 221,
+            "line": 222,
             "description": "imports tracking data",
             "access": "public",
             "tagname": "",
@@ -1026,7 +1274,7 @@
         },
         {
             "file": "som.js",
-            "line": 269,
+            "line": 270,
             "description": "pushes tracking data",
             "access": "public",
             "tagname": "",
@@ -1049,6 +1297,68 @@
                     "type": "Function"
                 }
             ],
+            "class": "som"
+        },
+        {
+            "file": "som.js",
+            "line": 283,
+            "description": "get the offline url for LM",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "getOfflineUrl",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "url"
+            },
+            "class": "som"
+        },
+        {
+            "file": "som.js",
+            "line": 305,
+            "description": "ASCII to Base64",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "atoB",
+            "params": [
+                {
+                    "name": "txt",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "base64",
+                "type": "String"
+            },
+            "class": "som"
+        },
+        {
+            "file": "som.js",
+            "line": 316,
+            "description": "Base64 to ASCII",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "btoA",
+            "params": [
+                {
+                    "name": "txt",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "ASCII",
+                "type": "String"
+            },
             "class": "som"
         },
         {
@@ -1080,91 +1390,133 @@
         },
         {
             "file": "utils.js",
-            "line": 63,
-            "description": "zip functions",
+            "line": 17,
+            "description": "log message to console",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "log",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
             "class": "utils"
         },
         {
             "file": "utils.js",
-            "line": 67,
-            "description": "unzip package to directory",
+            "line": 31,
+            "description": "log error to console",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "err",
             "params": [
                 {
-                    "name": "aZipFile",
-                    "description": "nsILocalFile source zip file"
-                },
-                {
-                    "name": "aDir",
-                    "description": "nsIFile target directory"
+                    "name": "msg",
+                    "description": "",
+                    "type": "String"
                 }
             ],
             "class": "utils"
+        },
+        {
+            "file": "utils.js",
+            "line": 47,
+            "description": "return true if obj contains a",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "contains",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "to search for",
+                    "type": "Object"
+                },
+                {
+                    "name": "obj",
+                    "description": "to search in",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "true if obj contains a",
+                "type": "Boolean"
+            },
+            "class": "utils"
+        },
+        {
+            "file": "utils.js",
+            "line": 65,
+            "description": "return true if sop is running on a mobile device (Browser: Fennec)",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "isMobile",
+            "return": {
+                "description": "true if sop is running on a mobile device (Browser: Fennec)",
+                "type": "Boolean"
+            },
+            "class": "utils"
+        },
+        {
+            "file": "utils.js",
+            "line": 78,
+            "description": "unzip package to directory",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "extractFiles",
+            "params": [
+                {
+                    "name": "aZipFile",
+                    "description": "source zip file",
+                    "type": "NsILocalFile"
+                },
+                {
+                    "name": "aDir",
+                    "description": "target directory",
+                    "type": "NsIFile"
+                }
+            ],
+            "class": "utils"
+        },
+        {
+            "file": "utils.js",
+            "line": 159,
+            "description": "shows FilePicker and extract zip to a folder (not used)",
+            "itemtype": "method",
+            "name": "showPicker",
+            "class": "utils"
+        },
+        {
+            "file": "utils.js",
+            "line": 183,
+            "description": "returns true if a key exists in an object",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "findIn",
+            "params": [
+                {
+                    "name": "obj",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "key",
+                    "description": "",
+                    "type": "String|Integer"
+                }
+            ],
+            "return": {
+                "description": "true if a key exists in an object"
+            },
+            "class": "utils"
         }
     ],
-    "warnings": [
-        {
-            "message": "Missing item type\ngui events",
-            "line": " env.js:325"
-        },
-        {
-            "message": "Missing item type\nserver",
-            "line": " env.js:386"
-        },
-        {
-            "message": "Missing item type\naddon lifecycle events",
-            "line": " env.js:433"
-        },
-        {
-            "message": "Missing item type\nsdk packages",
-            "line": " gui.js:36"
-        },
-        {
-            "message": "Missing item type\ncustom modules and variables",
-            "line": " gui.js:46"
-        },
-        {
-            "message": "Missing item type\nprefs events",
-            "line": " gui.js:340"
-        },
-        {
-            "message": "Missing item type\nEventHandler for Preference Button \"Start SOM\". \nClose existing SOM Tab and starts a new one.",
-            "line": " gui.js:344"
-        },
-        {
-            "message": "Missing item type\nmanager and player events",
-            "line": " gui.js:383"
-        },
-        {
-            "message": "Missing item type\nwindow events",
-            "line": " gui.js:416"
-        },
-        {
-            "message": "Missing item type\ntab events",
-            "line": " gui.js:438"
-        },
-        {
-            "message": "Missing item type\nmisc functions",
-            "line": " gui.js:459"
-        },
-        {
-            "message": "Missing item type\ntemplates",
-            "line": " gui.js:533"
-        },
-        {
-            "message": "Missing item type\ngui actions",
-            "line": " gui.js:626"
-        },
-        {
-            "message": "Missing item type\nconnector functions",
-            "line": " gui.js:645"
-        },
-        {
-            "message": "Missing item type\nzip functions",
-            "line": " utils.js:63"
-        },
-        {
-            "message": "Missing item type\nunzip package to directory",
-            "line": " utils.js:67"
-        }
-    ]
+    "warnings": []
 }

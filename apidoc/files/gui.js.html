@@ -133,9 +133,7 @@ exports.__exposedProps__ = {
 	removeListener	: &quot;rw&quot;
 };
 
-/**
- * sdk packages
- */
+// sdk packages
  
 var data = require(&#x27;self&#x27;).data;
 var windows = require(&quot;sdk/windows&quot;).browserWindows;
@@ -143,9 +141,8 @@ var winutils = require(&#x27;sdk/window/utils&#x27;);
 var tabs = require(&quot;sdk/tabs&quot;);
 var net = require(&quot;sdk/net/url&quot;);
 
-/** 
- * custom modules and variables
- */
+// custom modules and variables
+ 
 var main = require(&quot;./main&quot;);
 var utils = require(&quot;./utils&quot;);
 var som = require(&quot;./som&quot;);
@@ -437,14 +434,15 @@ function openSomHome() {
 		openSomTab();
 	}
 }
-/**
- * prefs events
- */ 
+
+// prefs events
 
 /**
- * EventHandler for Preference Button &quot;Start SOM&quot;. 
- * Close existing SOM Tab and starts a new one.
- * @
+ * eventHandler for preference button &quot;Start SOM&quot;. 
+ * close existing som tab and starts a new one.
+ * 
+ * @private
+ * @method onPrefStartSom
  **/   
 function onPrefStartSom() {
 	utils.log(&quot;onPrefStartSom&quot;);
@@ -452,6 +450,13 @@ function onPrefStartSom() {
 	openSomTab();
 }
 
+/**
+ * eventHandler for preference button &quot;Stop SOM&quot;. 
+ * close existing som tab and window references and stops the environment
+ * 
+ * @private
+ * @method onPrefStopSom
+ **/  
 function onPrefStopSom() {
 	utils.log(&quot;onPrefStopSom&quot;); 
 	if (mtab) {
@@ -462,6 +467,13 @@ function onPrefStopSom() {
 	env.stop();
 }
 
+/**
+ * eventHandler for preference button &quot;Reset SOM&quot;. 
+ * stop som, reset to the profile factory setting and start som
+ * 
+ * @private
+ * @method onPrefResetSom
+ **/ 
 function onPrefResetSom() {
 	utils.log(&quot;onPrefResetSom&quot;);
 	onPrefStopSom();
@@ -471,6 +483,13 @@ function onPrefResetSom() {
 	openSomTab();
 }
 
+/**
+ * eventHandler for preference button &quot;SOM Skin&quot;. 
+ * switches the som skin css on the fly (android: need a firefox restart) 
+ * 
+ * @private
+ * @method onPrefSkin
+ **/ 
 function onPrefSkin() {
 	utils.log(&quot;onPrefSkin: &quot; + prefs.prefSkin);
 	var skin = mw.document.getElementById(&quot;skin&quot;);
@@ -480,10 +499,16 @@ function onPrefSkin() {
 		skin.href = newHref;
 	}
 }
+
+// manager and player events 
+
 /**
- * manager and player events 
- */
-  
+ * eventHandler bound to the manager dom window (mw) load event. 
+ * fetches all learning modules and if player instances of lms are open, the status signal is set to &quot;running&quot;  
+ * 
+ * @private
+ * @method onManagerLoad
+ **/   
 function onManagerLoad() {
 	utils.log(&quot;manager ready&quot;);
 	var lms = som.getAllLm(); // this will trigger som event lmsChanged
@@ -492,6 +517,16 @@ function onManagerLoad() {
 	}
 }
 
+/**
+ * @event managerUnload
+ **/ 
+/**
+ * eventHandler bound to the manager dom window (mw) unload event. 
+ * setting the global variables mw and mtab to null and emitting managerUnload event   
+ * 
+ * @private
+ * @method onManagerUnload
+ **/ 
 function onManagerUnload() {
 	utils.log(&quot;manager closed&quot;);
 	mw = null;
@@ -499,12 +534,32 @@ function onManagerUnload() {
 	emit(exports,&quot;managerUnload&quot;);
 }
 
+/**
+ * @event playerLoad
+ **/ 
+/**
+ * eventHandler bound to the players dom window (ps[p.id].wrapWin) load event. 
+ * rendering running status of actual lm and emitting playerLoad event 
+ * 
+ * @private
+ * @method onPlayerLoad
+ **/   
 function onPlayerLoad(id) {
 	utils.log(&quot;player ready: &quot; + id);
 	renderLmStatus(id,&quot;running&quot;);
 	emit(exports, &quot;playerLoad&quot;);
 }
 
+/**
+ * @event playerUnload
+ **/ 
+/**
+ * eventHandler bound to the players dom window (ps[p.id].wrapWin) unload event. 
+ * deleting ps[p.id] object, rendering running status and emitting playerUnload event    
+ * 
+ * @private
+ * @method onPlayerUnload
+ **/ 
 function onPlayerUnload(id) {
 	utils.log(&quot;gui emit playerUnload&quot;);
 	delete ps[id];
@@ -513,53 +568,116 @@ function onPlayerUnload(id) {
 	
 }
 
+// window events
+
 /**
- * window events
- */ 
- 
+ * eventhandler triggered on all new window.open events
+ * needed for controlling a player window dragged to a new browser window (see checkNewWindow)
+ * 
+ * @private
+ * @method onWinOpen
+ **/  
 function onWinOpen(win) { // check if a player window was dragged to a new window
 	utils.log(&quot;gui onWinOpen&quot;);
 	var brWin = winutils.getMostRecentBrowserWindow();
 	brWin.setTimeout(function () { checkNewWindow(win.tabs[0],brWin) }, 1000);
 }
 
+/**
+ * eventhandler triggered on all window.close events
+ * only event logging
+ * 
+ * @private
+ * @method onWinClose
+ **/ 
 function onWinClose(window) {
 	utils.log(&quot;gui onWinClose&quot;);
 }
 
+/**
+ * eventhandler triggered on all window.activate events
+ * only event logging
+ * 
+ * @private
+ * @method onWinActivate
+ **/ 
 function onWinActivate(window) {
 	utils.log(&quot;gui onWinActivate&quot;);
 }
 
+/**
+ * eventhandler triggered on all window.deactivate events
+ * only event logging
+ * 
+ * @private
+ * @method onWinDeactivate
+ * @param {window Object} window
+ **/
 function onWinDeactivate(window) {
 	utils.log(&quot;gui onWinDeactivate&quot;);
 }
 
+// tab events 
+
 /**
- * tab events 
- */
-  
+ * eventhandler triggered on all tab.ready events
+ * triggers init(tab) for initialization of manager and player tabs
+ * 
+ * @private
+ * @method onTabReady
+ * @param {tab Object} tab
+ **/  
 function onTabReady(tab) {
 	utils.log(&quot;tab ready: &quot; + tab.title);
 	init(tab); 
 }
 
+/**
+ * eventhandler triggered on all tab.close events
+ * only event logging
+ * 
+ * @private
+ * @method onTabClose
+ * @param {tab Object} tab
+ **/ 
 function onTabClose(tab) { // Buggy
 	utils.log(&quot;tab close&quot;);
 }
 
+/**
+ * eventhandler triggered on all tab.activate events
+ * only event logging
+ * 
+ * @private
+ * @method onTabActivate
+ * @param {tab Object} tab
+ **/ 
 function onTabActivate(tab) {
 	utils.log(&quot;tab activate&quot;);  
 }
 
+/**
+ * eventhandler triggered on all tab.deactivate events
+ * only event logging
+ * 
+ * @private
+ * @method onTabDeactivate
+ * @param {tab Object} tab
+ **/ 
 function onTabDeactivate(tab) {
 	utils.log(&quot;tab deactivate&quot;);
 }
 
-/**
- * misc functions
- */ 
+// misc functions
 
+/**
+ * dragging an existing player tab to a new browser window needs updating the ps[p.id] window and tab objects
+ * 
+ * @private
+ * @method checkNewWindow
+ * @param {tab Object} tab
+ * @param {BrowserWindow object} brWin
+ **/ 
 function checkNewWindow(tab,brWin) {
 	utils.log(&quot;checkNewWindow: &quot; + tab.title);
 	for each (var p in ps) {		
@@ -571,6 +689,14 @@ function checkNewWindow(tab,brWin) {
 	}
 }
 
+/**
+ * returns an lm.id created from querystring paramters
+ * 
+ * @private
+ * @method getId
+ * @param {params Object} params
+ * @return {String} id
+ **/ 
 function getId(params) {
 	try {
 		return params.client + &quot;_&quot; + params.obj_id;
@@ -580,6 +706,14 @@ function getId(params) {
 	}
 }
 
+/**
+ * returns true if url is a player url
+ * 
+ * @public
+ * @method isPlayerUrl
+ * @param {String} url
+ * @return {String|Boolean} p.id if url is a player url else false
+ **/ 
 function isPlayerUrl(url) {
 	var ret = /(localhost|127\.0\.0\.1).*?player.*/g.test(url);
 	if (ret) {
@@ -590,10 +724,24 @@ function isPlayerUrl(url) {
 	}
 }
 
+/**
+ * returns true if url is a player url
+ * 
+ * @public
+ * @method isPlayerOpen
+ * @param {String} id
+ * @return {Boolean} true if url is a player with id is open
+ **/ 
 function isPlayerOpen(id) {
 	return (id in ps);
 }
 
+/**
+ * closes recent empty tabs
+ * 
+ * @public
+ * @method closeRecentTab
+ **/ 
 function closeRecentTab() {
 	if (tabs.activeTab.url == &quot;about:blank&quot;) { //close only empty invalid windows opened with a href link
 		tabs.activeTab.close();
@@ -601,12 +749,21 @@ function closeRecentTab() {
 	}
 }
 
+/**
+ * get player id from url
+ * 
+ * @public
+ * @method getIdFromUrl
+ * @param {String} url
+ * @return {String|Boolean} player id else false
+ **/ 
 function getIdFromUrl(url) {
 	try {
 		return getId(getParams(url));
 	}
 	catch(e) {
 		utils.err(e);
+		return false;
 	}
 }
 
@@ -630,9 +787,7 @@ function getParams(win) { // window object or url string
 	return qs;
 }
 
-/**
- * templates
- */
+// templates
 
 function getManagerTemplates() {
 	for each (var tmp in Object.keys(mts)) {
@@ -723,10 +878,8 @@ function getTemplateContent(str,data) {
 	return str.replace(/__\#VAR_([a-zA-Z]+)__/g, function(a,b){return(undefined===data[b])?a:data[b]}).replace(/__\#LNG_([a-zA-Z]+)__/g,function(a,b){return _(b);});
 }
 
-/**
- * gui actions
- */
-   
+// gui actions
+
 function getData(statement, params, asRecordObject) {
 	return db.getData(statement, params, false, asRecordObject);
 }
@@ -742,9 +895,7 @@ var managerFuncs = {
 	}
 } 
 
-/** 
- * connector functions
- **/
+// connector functions
 
 function getSopVersion() {
 	return &quot;0.1&quot;;
@@ -770,7 +921,8 @@ var playerFuncs = {
 	}
 }
 
-/* late binding of exports and exposed props */
+// late binding of exports and exposed props
+
 exports.getParams = getParams;
 exports.getIdFromUrl = getIdFromUrl;
 exports.isPlayerOpen = isPlayerOpen;
