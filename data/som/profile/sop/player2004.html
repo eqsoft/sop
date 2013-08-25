@@ -169,13 +169,10 @@
 			storeNode[44]="";//now
 			storeNode[45]=additional_tables;
 			var dbResult = gui.setData("lmSetAllCmiNodeByClientAndObjId",storeNode);
-			var status="trac_not_attempted", statusNum=data.now_global_status;
-			if(statusNum==1) status="trac_in_progress";
-			else if(statusNum==2) status="trac_completed";
-			else if(statusNum==3) status="trac_failed";
+			var status=data.now_global_status;
 			var dbResult = gui.setData("lmSetStatusByClientAndObjId",[params.client,params.obj_id,status]);
 			if (dbResult!=true) return "failure storing status";
-			return {"new_global_status":statusNum};
+			return {"new_global_status":status};
 		}
 		window.addEventListener("load",initSom,true);
 		//]]>
