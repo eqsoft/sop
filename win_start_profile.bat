@@ -1,2 +1,2 @@
-cfx run -b "bin\win\23.01\firefox.exe" -p profile
+cfx run -b "bin\win\24\firefox.exe" -p profile
 

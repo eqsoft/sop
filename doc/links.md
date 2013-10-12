@@ -20,3 +20,6 @@ External Ressources
 
 ## binary data with xmlhttp ##
 * https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data
+
+## LanguagePacks ##
+* ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/24.0/win32/xpi/

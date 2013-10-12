@@ -1,0 +1,139 @@
+scorm 1.2
+{"slm_id":"256","child":"1","parent":"0","lft":"1","rgt":"410","depth":"1","obj_id":"1","title":"ostyn-AFE980F6-PSUK-2011-0926-B622A1EF5495","c_type":"sma","desc":null,"last":true}]" 
+string(293) "
+[{"slm_id":"256","child":"2","parent":"1","lft":"2","rgt":"207","depth":"2","obj_id":"2","title":"Organisationen","c_type":"sos","desc":null},
+{"slm_id":"256","child":"8","parent":"1","lft":"208","rgt":"311","depth":"2","obj_id":"8","title":"Ressourcen","c_type":"srs","desc":null,"last":true}]" 
+
+string(175) "
+[{"slm_id":"256","child":"3","parent":"2","lft":"3","rgt":"106","depth":"3","obj_id":"3","title":"SCORM Diagnostic SCO multi 20110926","c_type":"sor","desc":null,"last":true}]" 
+string(749) "
+[
+{"slm_id":"256","child":"4","parent":"3","lft":"4","rgt":"5","depth":"4","obj_id":"4","title":"SCO ohne completion_threshold und ohne scaled_passing_score","c_type":"sit","desc":null},
+{"slm_id":"256","child":"5","parent":"3","lft":"6","rgt":"7","depth":"4","obj_id":"5","title":"SCO mit completion_threshold aber ohne scaled_passing_score","c_type":"sit","desc":null},
+{"slm_id":"256","child":"6","parent":"3","lft":"8","rgt":"9","depth":"4","obj_id":"6","title":"SCO ohne completion_threshold aber mit scaled_passing_score","c_type":"sit","desc":null},
+{"slm_id":"256","child":"7","parent":"3","lft":"10","rgt":"11","depth":"4","obj_id":"7","title":"SCO mit completion_threshold und mit scaled_passing_score","c_type":"sit","desc":null,"last":true}
+]
+" 
+
+string(599) "[
+{"slm_id":"256","child":"9","parent":"8","lft":"209","rgt":"210","depth":"3","obj_id":"9","title":"proddingsco1.htm","c_type":"sre","desc":null},
+{"slm_id":"256","child":"10","parent":"8","lft":"211","rgt":"212","depth":"3","obj_id":"10","title":"proddingsco2.htm","c_type":"sre","desc":null},
+{"slm_id":"256","child":"11","parent":"8","lft":"213","rgt":"214","depth":"3","obj_id":"11","title":"proddingsco3.htm","c_type":"sre","desc":null},
+{"slm_id":"256","child":"12","parent":"8","lft":"215","rgt":"216","depth":"3","obj_id":"12","title":"proddingsco4.htm","c_type":"sre","desc":null,"last":true}
+]"
+
+
+
+
+string(188) "[{"slm_id":"257","child":"13","parent":"0","lft":"1","rgt":"1226","depth":"1","obj_id":"13","title":"MANIFEST-D27FF04A-EC29-BEA4-CE69-14576E5E05E1","c_type":"sma","desc":null,"last":true}]"
+string(302) "[{"slm_id":"257","child":"14","parent":"13","lft":"2","rgt":"1023","depth":"2","obj_id":"14","title":"Organisationen","c_type":"sos","desc":null},{"slm_id":"257","child":"54","parent":"13","lft":"1024","rgt":"1127","depth":"2","obj_id":"54","title":"Ressourcen","c_type":"srs","desc":null,"last":true}]" 
+string(167) "[{"slm_id":"257","child":"15","parent":"14","lft":"3","rgt":"922","depth":"3","obj_id":"15","title":"Intel II Teamentwicklung","c_type":"sor","desc":null,"last":true}]" 
+string(162) "[{"slm_id":"257","child":"16","parent":"15","lft":"4","rgt":"821","depth":"4","obj_id":"16","title":"Tabellenkalkulation","c_type":"sit","desc":null,"last":true}]" 
+string(760) "[{"slm_id":"257","child":"17","parent":"16","lft":"5","rgt":"108","depth":"5","obj_id":"17","title":"Tabellenkalkulation wof\u00fcr","c_type":"sit","desc":null},{"slm_id":"257","child":"20","parent":"16","lft":"109","rgt":"212","depth":"5","obj_id":"20","title":"F\u00fcr Anf\u00e4nger","c_type":"sit","desc":null},{"slm_id":"257","child":"29","parent":"16","lft":"213","rgt":"316","depth":"5","obj_id":"29","title":"F\u00fcr Fortgeschrittene","c_type":"sit","desc":null},{"slm_id":"257","child":"34","parent":"16","lft":"317","rgt":"420","depth":"5","obj_id":"34","title":"Test","c_type":"sit","desc":null},{"slm_id":"257","child":"37","parent":"16","lft":"421","rgt":"728","depth":"5","obj_id":"37","title":"Workshop","c_type":"sit","desc":null,"last":true}]" 
+string(325) "[{"slm_id":"257","child":"18","parent":"17","lft":"6","rgt":"7","depth":"6","obj_id":"18","title":"Beispiel zur Notenerstellung","c_type":"sit","desc":null},{"slm_id":"257","child":"19","parent":"17","lft":"8","rgt":"9","depth":"6","obj_id":"19","title":"Beispiel zur Notenverwaltung","c_type":"sit","desc":null,"last":true}]" 
+string(1307) "[
+{"slm_id":"257","child":"21","parent":"20","lft":"110","rgt":"111","depth":"6","obj_id":"21","title":"Begriffserkl\u00e4rung","c_type":"sit","desc":null},
+{"slm_id":"257","child":"22","parent":"20","lft":"112","rgt":"113","depth":"6","obj_id":"22","title":"Tabellenaufbau","c_type":"sit","desc":null},
+{"slm_id":"257","child":"23","parent":"20","lft":"114","rgt":"115","depth":"6","obj_id":"23","title":"Symbolleisten ver\u00e4ndern","c_type":"sit","desc":null},
+{"slm_id":"257","child":"24","parent":"20","lft":"116","rgt":"117","depth":"6","obj_id":"24","title":"Erstellen Sie einen Stundenplan","c_type":"sit","desc":null},
+{"slm_id":"257","child":"25","parent":"20","lft":"118","rgt":"119","depth":"6","obj_id":"25","title":"Listenfunktion f\u00fcr fortlaufende Eintr\u00e4ge","c_type":"sit","desc":null},
+{"slm_id":"257","child":"26","parent":"20","lft":"120","rgt":"121","depth":"6","obj_id":"26","title":"Einf\u00fcgen und L\u00f6schen von Zeilen\/Spalten","c_type":"sit","desc":null},
+{"slm_id":"257","child":"27","parent":"20","lft":"122","rgt":"123","depth":"6","obj_id":"27","title":"Kopieren, Rahmen und Layout\/Spalten","c_type":"sit","desc":null},
+{"slm_id":"257","child":"28","parent":"20","lft":"124","rgt":"125","depth":"6","obj_id":"28","title":"Drucken","c_type":"sit","desc":null,"last":true}]" 
+string(627) "[
+{"slm_id":"257","child":"30","parent":"29","lft":"214","rgt":"215","depth":"6","obj_id":"30","title":"Neues Projekt: Noten verwalten","c_type":"sit","desc":null},
+{"slm_id":"257","child":"31","parent":"29","lft":"216","rgt":"217","depth":"6","obj_id":"31","title":"Durchschnitt selbst berechnen","c_type":"sit","desc":null},
+{"slm_id":"257","child":"32","parent":"29","lft":"218","rgt":"219","depth":"6","obj_id":"32","title":"Notenstatistik","c_type":"sit","desc":null},
+{"slm_id":"257","child":"33","parent":"29","lft":"220","rgt":"221","depth":"6","obj_id":"33","title":"Notendiagramm","c_type":"sit","desc":null,"last":true}
+]" 
+string(324) "[
+{"slm_id":"257","child":"35","parent":"34","lft":"318","rgt":"319","depth":"6","obj_id":"35","title":"F\u00fcr Anf\u00e4nger","c_type":"sit","desc":null},
+{"slm_id":"257","child":"36","parent":"34","lft":"320","rgt":"321","depth":"6","obj_id":"36","title":"F\u00fcr Fortgeschrittene","c_type":"sit","desc":null,"last":true}
+]" 
+string(348) "[
+{"slm_id":"257","child":"38","parent":"37","lft":"422","rgt":"525","depth":"6","obj_id":"38","title":"Notenerstellung Schritt f\u00fcr Schritt","c_type":"sit","desc":null},
+{"slm_id":"257","child":"46","parent":"37","lft":"526","rgt":"629","depth":"6","obj_id":"46","title":"Notenverwaltung einfach gemacht","c_type":"sit","desc":null,"last":true}
+]" 
+string(1078) "[
+{"slm_id":"257","child":"39","parent":"38","lft":"423","rgt":"424","depth":"7","obj_id":"39","title":"Programm starten","c_type":"sit","desc":null},
+{"slm_id":"257","child":"40","parent":"38","lft":"425","rgt":"426","depth":"7","obj_id":"40","title":"Eingabe der Daten","c_type":"sit","desc":null},
+{"slm_id":"257","child":"41","parent":"38","lft":"427","rgt":"428","depth":"7","obj_id":"41","title":"Eingabe der Werte","c_type":"sit","desc":null},
+{"slm_id":"257","child":"42","parent":"38","lft":"429","rgt":"430","depth":"7","obj_id":"42","title":"Erstellen der Formel","c_type":"sit","desc":null},
+{"slm_id":"257","child":"43","parent":"38","lft":"431","rgt":"432","depth":"7","obj_id":"43","title":"Formel \u00fcbertragen, speichern","c_type":"sit","desc":null},
+{"slm_id":"257","child":"44","parent":"38","lft":"433","rgt":"434","depth":"7","obj_id":"44","title":"Zellen formatieren","c_type":"sit","desc":null},
+{"slm_id":"257","child":"45","parent":"38","lft":"435","rgt":"436","depth":"7","obj_id":"45","title":"Zellen sch\u00fctzen","c_type":"sit","desc":null,"last":true}
+]" 
+string(1084) "[
+{"slm_id":"257","child":"47","parent":"46","lft":"527","rgt":"528","depth":"7","obj_id":"47","title":"Programm starten","c_type":"sit","desc":null},
+{"slm_id":"257","child":"48","parent":"46","lft":"529","rgt":"530","depth":"7","obj_id":"48","title":"Beschriftung","c_type":"sit","desc":null},
+{"slm_id":"257","child":"49","parent":"46","lft":"531","rgt":"532","depth":"7","obj_id":"49","title":"Notenberechnung","c_type":"sit","desc":null},
+{"slm_id":"257","child":"50","parent":"46","lft":"533","rgt":"534","depth":"7","obj_id":"50","title":"Zellenformatierung","c_type":"sit","desc":null},
+{"slm_id":"257","child":"51","parent":"46","lft":"535","rgt":"536","depth":"7","obj_id":"51","title":"Neue Arbeitsbl\u00e4tter anlegen","c_type":"sit","desc":null},
+{"slm_id":"257","child":"52","parent":"46","lft":"537","rgt":"538","depth":"7","obj_id":"52","title":"Tabellenbl\u00e4tter verkn\u00fcpfen","c_type":"sit","desc":null},
+{"slm_id":"257","child":"53","parent":"46","lft":"539","rgt":"540","depth":"7","obj_id":"53","title":"Zellen formatieren","c_type":"sit","desc":null,"last":true}
+]" 
+
+string(5789) "[
+	{"slm_id":"257","child":"55","parent":"54","lft":"1025","rgt":"1026","depth":"3","obj_id":"55","title":"html\/mod4461.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"56","parent":"54","lft":"1027","rgt":"1028","depth":"3","obj_id":"56","title":"html\/mod4462.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"57","parent":"54","lft":"1029","rgt":"1030","depth":"3","obj_id":"57","title":"html\/mod4463.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"58","parent":"54","lft":"1031","rgt":"1032","depth":"3","obj_id":"58","title":"html\/mod4464.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"59","parent":"54","lft":"1033","rgt":"1034","depth":"3","obj_id":"59","title":"html\/mod4465.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"60","parent":"54","lft":"1035","rgt":"1036","depth":"3","obj_id":"60","title":"html\/mod4466.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"61","parent":"54","lft":"1037","rgt":"1038","depth":"3","obj_id":"61","title":"html\/mod4467.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"62","parent":"54","lft":"1039","rgt":"1040","depth":"3","obj_id":"62","title":"html\/mod4468.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"63","parent":"54","lft":"1041","rgt":"1042","depth":"3","obj_id":"63","title":"html\/mod4469.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"64","parent":"54","lft":"1043","rgt":"1044","depth":"3","obj_id":"64","title":"html\/mod4470.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"65","parent":"54","lft":"1045","rgt":"1046","depth":"3","obj_id":"65","title":"html\/mod4471.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"66","parent":"54","lft":"1047","rgt":"1048","depth":"3","obj_id":"66","title":"html\/mod4472.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"67","parent":"54","lft":"1049","rgt":"1050","depth":"3","obj_id":"67","title":"html\/mod4473.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"68","parent":"54","lft":"1051","rgt":"1052","depth":"3","obj_id":"68","title":"html\/mod4474.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"69","parent":"54","lft":"1053","rgt":"1054","depth":"3","obj_id":"69","title":"html\/mod4475.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"70","parent":"54","lft":"1055","rgt":"1056","depth":"3","obj_id":"70","title":"html\/mod4476.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"71","parent":"54","lft":"1057","rgt":"1058","depth":"3","obj_id":"71","title":"html\/mod4477.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"72","parent":"54","lft":"1059","rgt":"1060","depth":"3","obj_id":"72","title":"html\/mod4478.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"73","parent":"54","lft":"1061","rgt":"1062","depth":"3","obj_id":"73","title":"html\/mod4479.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"74","parent":"54","lft":"1063","rgt":"1064","depth":"3","obj_id":"74","title":"html\/mod4480.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"75","parent":"54","lft":"1065","rgt":"1066","depth":"3","obj_id":"75","title":"html\/mod4481.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"76","parent":"54","lft":"1067","rgt":"1068","depth":"3","obj_id":"76","title":"html\/mod4482.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"77","parent":"54","lft":"1069","rgt":"1070","depth":"3","obj_id":"77","title":"html\/mod4483.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"78","parent":"54","lft":"1071","rgt":"1072","depth":"3","obj_id":"78","title":"html\/mod4484.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"79","parent":"54","lft":"1073","rgt":"1074","depth":"3","obj_id":"79","title":"html\/mod4486.html","c_type":"sre","desc":null},
+	{"slm_id":"257","child":"80","parent":"54","lft":"1075","rgt":"1076","depth":"3","obj_id":"80","title":"html\/mod4487.html","c_type":"sre","desc":null},{"slm_id":"257","child":"81","parent":"54","lft":"1077","rgt":"1078","depth":"3","obj_id":"81","title":"html\/mod4488.html","c_type":"sre","desc":null},{"slm_id":"257","child":"82","parent":"54","lft":"1079","rgt":"1080","depth":"3","obj_id":"82","title":"html\/mod4489.html","c_type":"sre","desc":null},{"slm_id":"257","child":"83","parent":"54","lft":"1081","rgt":"1082","depth":"3","obj_id":"83","title":"html\/mod4490.html","c_type":"sre","desc":null},{"slm_id":"257","child":"84","parent":"54","lft":"1083","rgt":"1084","depth":"3","obj_id":"84","title":"html\/mod4491.html","c_type":"sre","desc":null},{"slm_id":"257","child":"85","parent":"54","lft":"1085","rgt":"1086","depth":"3","obj_id":"85","title":"html\/mod4492.html","c_type":"sre","desc":null},{"slm_id":"257","child":"86","parent":"54","lft":"1087","rgt":"1088","depth":"3","obj_id":"86","title":"html\/mod4493.html","c_type":"sre","desc":null},{"slm_id":"257","child":"87","parent":"54","lft":"1089","rgt":"1090","depth":"3","obj_id":"87","title":"html\/mod4494.html","c_type":"sre","desc":null},{"slm_id":"257","child":"88","parent":"54","lft":"1091","rgt":"1092","depth":"3","obj_id":"88","title":"html\/mod4495.html","c_type":"sre","desc":null},{"slm_id":"257","child":"89","parent":"54","lft":"1093","rgt":"1094","depth":"3","obj_id":"89","title":"html\/mod4496.html","c_type":"sre","desc":null},{"slm_id":"257","child":"90","parent":"54","lft":"1095","rgt":"1096","depth":"3","obj_id":"90","title":"html\/mod4497.html","c_type":"sre","desc":null},{"slm_id":"257","child":"91","parent":"54","lft":"1097","rgt":"1098","depth":"3","obj_id":"91","title":"html\/mod4498.html","c_type":"sre","desc":null},{"slm_id":"257","child":"92","parent":"54","lft":"1099","rgt":"1100","depth":"3","obj_id":"92","title":"html\/mod4499.html","c_type":"sre","desc":null,"last":true}
+]"
+
+
+scorm 2004:
+{
+"item":
+{
+	"id":"C98978EA-PSUK-2011-0926-B622A1EF5492","title":"SCORM Diagnostic SCO multi 20110926","sequencingId":"idm228568","foreignId":2,
+	"item":[
+		{"id":"DB4B88FC-PSUK-2011-0926-B622A1EF5491","title":"SCO ohne completion_threshold und ohne scaled_passing_score","foreignId":3,"href":"proddingsco1.htm","sco":1},
+		{"id":"DB4B88FC-PSUK-2011-0926-B622A1EF5492","title":"SCO mit completion_threshold aber ohne scaled_passing_score","completionThreshold":0.8,"foreignId":4,"href":"proddingsco2.htm","sco":1},
+		{"id":"DB4B88FC-PSUK-2011-0926-B622A1EF5493","title":"SCO ohne completion_threshold aber mit scaled_passing_score","sequencingId":"idm222784","foreignId":5,"href":"proddingsco3.htm","sco":1},
+		{"id":"DB4B88FC-PSUK-2011-0926-B622A1EF5494","title":"SCO mit completion_threshold und mit scaled_passing_score","completionThreshold":0.8,"sequencingId":"idm227592","foreignId":6,"href":"proddingsco4.htm","sco":1}
+	],
+	"base":""
+},
+	"sequencing":[
+		{"id":"idm222784","foreignId":15,"objective":[{"primary":true,"objectiveID":"PRIMARYOBJ","satisfiedByMeasure":true,"minNormalizedMeasure":0.8,"foreignId":16}]},
+		{"id":"idm227592","foreignId":17,"objective":[{"primary":true,"objectiveID":"PRIMARYOBJ2","satisfiedByMeasure":true,"minNormalizedMeasure":0.8,"foreignId":18}]},
+		{"id":"idm228568","flow":true,"completionSetByContent":true,"objectiveSetByContent":true,"foreignId":19}
+	],
+	"base":".\/data\/trunk\/lm_data\/lm_237\/","foreignId":1,"id":"ostyn-AFE980F6-PSUK-2011-0926-B622A1EF5495"
+};
+
+{"item":
+	{"id":"C98978EA-PSUK-2011-0926-B622A1EF5492","title":"SCORM Diagnostic SCO multi 20110926","sequencingId":"idm228568","foreignId":2,"item":[
+		{"id":"DB4B88FC-PSUK-2011-0926-B622A1EF5491","title":"SCO ohne completion_threshold und ohne scaled_passing_score","foreignId":3,"href":"proddingsco1.htm","sco":1},
+		{"id":"DB4B88FC-PSUK-2011-0926-B622A1EF5492","title":"SCO mit completion_threshold aber ohne scaled_passing_score","completionThreshold":0.8,"foreignId":4,"href":"proddingsco2.htm","sco":1},
+		{"id":"DB4B88FC-PSUK-2011-0926-B622A1EF5493","title":"SCO ohne completion_threshold aber mit scaled_passing_score","sequencingId":"idm222784","foreignId":5,"href":"proddingsco3.htm","sco":1},
+		{"id":"DB4B88FC-PSUK-2011-0926-B622A1EF5494","title":"SCO mit completion_threshold und mit scaled_passing_score","completionThreshold":0.8,"sequencingId":"idm227592","foreignId":6,"href":"proddingsco4.htm","sco":1}
+	],"base":""},
+	"sequencing":[
+		{"id":"idm222784","foreignId":15,"objective":[{"primary":true,"objectiveID":"PRIMARYOBJ","satisfiedByMeasure":true,"minNormalizedMeasure":0.8,"foreignId":16}]},
+		{"id":"idm227592","foreignId":17,"objective":[{"primary":true,"objectiveID":"PRIMARYOBJ2","satisfiedByMeasure":true,"minNormalizedMeasure":0.8,"foreignId":18}]},
+		{"id":"idm228568","flow":true,"completionSetByContent":true,"objectiveSetByContent":true,"foreignId":19}],
+		"base":".\/data\/trunk\/lm_data\/lm_237\/","foreignId":1,"id":"ostyn-AFE980F6-PSUK-2011-0926-B622A1EF5495"
+}

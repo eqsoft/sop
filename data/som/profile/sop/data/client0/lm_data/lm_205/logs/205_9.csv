@@ -1,5 +1,0 @@
-"CourseId";"ScoId";"ScoTitle";"Timestamp";"Action";"Key";"Value";"Return Value";"Errorcode";"Timespan";"ErrorDescription"
-205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"Initialize";"";"";"true";0;3475;""
-205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"GetLastError";"";"";"0";;3477;""
-205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"GetValue";"cmi.suspend_data";"";"";403;19679;"Data Model Element Value Not Initialized"
-205;"DB4B88FC-PSUK-2011-0926-B622A1EF5492";"SCO mit completion_threshold aber ohne scaled_passing_score";19.11.2012 21:15;"GetLastError";"";"";"403";;19679;""

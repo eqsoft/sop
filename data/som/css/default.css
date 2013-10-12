@@ -30,3 +30,14 @@
 	margin-right: 15px;
 }
 
+table {
+	font-size: 80%;
+}
+
+th {
+	font-weight: normal;
+	text-align: left;
+	padding-left: 2pt;
+	padding-right: 10pt;
+}
+
