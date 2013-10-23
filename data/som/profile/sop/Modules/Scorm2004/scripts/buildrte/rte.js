@@ -1,4 +1,4 @@
-// Build: 2013630153310 
+// Build: 20131020141053 
 /*
 	+-----------------------------------------------------------------------------+
 	| ILIAS open source                                                           |
@@ -13337,7 +13337,7 @@ function load()
 			{
 				globalAct[remoteMapping['package'][i]] = row[i];
 			}
-			globalAct.learner_id = globalAct.user_id;
+//			globalAct.learner_id = globalAct.user_id; //TODO UK check
 		}
 	}
 	
@@ -13599,10 +13599,10 @@ function save()
 				if(k == "new_global_status") new_global_status=result[k];
 			}
 
-			//if status has to be send to a cms
-			//if (config.status.saved_global_status != new_global_status) {
-			//	try{windowOpenerLoc.reload();} catch(e){}
-			//}
+			//sychronize status
+			if (config.status.saved_global_status != new_global_status) {
+				try{windowOpenerLoc.reload();} catch(e){}
+			}
 			
 			config.status.saved_global_status = new_global_status;
 			return true;
@@ -13857,9 +13857,8 @@ function onWindowUnload ()
 	result["p"]=config.status.p;
 	result["last"]="";
 	if (config.auto_last_visited==true) result["last"]=activities[mlaunch.mActivityID].id;
-	var result=this.config.scorm_player_unload_url 
-		? sendJSONRequest(this.config.scorm_player_unload_url, result)
-		: {};
+	if (typeof SOP!="undefined" && SOP==true) result=scormPlayerUnload(result);
+	else result=this.config.scorm_player_unload_url ? sendJSONRequest(this.config.scorm_player_unload_url, result): {};
 	removeResource();
 
 	//try{windowOpenerLoc.reload();} catch(e){}
@@ -13954,11 +13953,21 @@ function onItemDeliver(item, wasSuspendAll) // onDeliver called from sequencing 
 		//support for auto-review
 		item.options = new Object();
 		item.options.notracking = false;
-		if (globalAct.auto_review) {
-			if (item.completion_status == 'completed' || item.success_status == 'passed') {
+		if (globalAct.auto_review != 'n') {
+			if (
+				(globalAct.auto_review == 'r' && ((item.completion_status == 'completed' && item.success_status != 'failed') || item.success_status == 'passed') ) ||
+				(globalAct.auto_review == 'p' && item.success_status == 'passed') ||
+				(globalAct.auto_review == 'q' && (item.success_status == 'passed' || item.success_status == 'failed') ) ||
+				(globalAct.auto_review == 'c' && item.completion_status == 'completed') ||
+				(globalAct.auto_review == 'd' && (item.completion_status == 'completed' && item.success_status == 'passed') ) ||
+				(globalAct.auto_review == 'y' && (item.completion_status == 'completed' || item.success_status == 'passed') )
+			) {
 				data.cmi.mode = "review";
-				item.options.notracking = true;//no better score for example!
 			}
+		}
+		if (data.cmi.mode == "review") {
+			data.cmi.credit = "no-credit";
+			item.options.notracking = true;//UK: no better score for example!
 		}
 
 		if (item.exit!="suspend") {
@@ -15042,6 +15051,8 @@ function Runtime(cmiItem, onCommit, onTerminate, onDebug)
 					var total_time=addTimes(total_time_at_initialize,cmiItem.cmi.session_time);
 					cmiItem.cmi.total_time = total_time.toString();
 				}
+				//auto suspend
+				if (config.auto_suspend==true) cmiItem.cmi.exit="suspend";
 				//store correct status in DB; returnValue1 because of IE;
 				var statusValues=syncCMIADLTree();
 				statusHandler(cmiItem.scoid,"completion",statusValues[0]);

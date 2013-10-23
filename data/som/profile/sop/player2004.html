@@ -5,27 +5,6 @@
 		<title>SCORM Offline Player</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=7" />
 	<script type="text/javascript">
-/*
-	window.addEventListener("load",init,true);
-	function init() {
-		var qs = queryObj();
-		var d = getObj(som.getData("vLmData",[qs.client,qs.obj_id],true));
-		if (d.error) {
-			alert(d.error);
-		}
-	}
-	function getObj(str) {
-		return JSON.parse(str);
-	}
-	
-	function queryObj() {
-		var result = {}, queryString = location.search.slice(1), re = /([^&=]+)=([^&]*)/g, m;
-		while (m = re.exec(queryString)) {
-			result[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
-		}
-		return result;
-	}
-*/
 	</script>
 		<script type="text/javascript">//<![CDATA[
 		Date.remoteOffset = (new Date()).getTime() - 1372597491243;
@@ -110,10 +89,13 @@
 			} else {
 				params = getObj(gui.getPlayerParams(window));
 				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
+//				alert(d[0].init_data);
 				var init_data=JSON.parse(d[0].init_data);
 				init_data.package_url='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
 //'{"cp_url":"","cmi_url":"","store_url":"","get_adldata_url":"","set_adldata_url":"","adlact_url":"","specialpage_url":"","suspend_url":"","get_suspend_url":"","gobjective_url":"","get_gobjective_url":"","ping_url":"","scorm_player_unload_url":"","session_ping":0,"envEditor":0,"post_log_url":"","livelog_url":"","package_url":"\/data\/client0\/lm_data\/lm_205\/",
-//"debug":false,"debug_fields":[],"debug_fields_test":[],'+d[0].init_data+',"langstrings":{"btnStart":"Start","btnExit":"Exit","btnExitAll":"Exit All","btnSuspendAll":"Suspend All","btnPrevious":"Previous","btnContinue":"Continue","btnhidetree":"Hide Tree","btnshowtree":"Show Tree","linkexpandTree":"Expand All","linkcollapseTree":"Collapse All"}}');
+//"debug":false,"debug_fields":[],"debug_fields_test":[],'+d[0].init_data+',
+				init_data.langstrings={"btnStart":"Start","btnExit":"Exit","btnExitAll":"Exit All","btnSuspendAll":"Suspend All","btnPrevious":"Previous","btnContinue":"Continue","btnhidetree":"Hide Tree","btnshowtree":"Show Tree","linkexpandTree":"Expand All","linkcollapseTree":"Collapse All"};
+//}');
 				init_cp_data=JSON.parse(d[0].resources);
 				//init_cp_data=d[0].resources;
 //				alert(init_cp_data);
@@ -133,10 +115,10 @@
 
 //				ret.data.package=[["6","root user","205","normal","credit"]];//JSON.parse(gui.getData("lmGetAllCmiPackageByClientAndObjId",[params.client,params.obj_id],false));
 				d=JSON.parse(gui.getData("lmGetAllCmiNodeByClientAndObjId",[params.client,params.obj_id],false));
-				for(var i=0;i<d.length;i++){
-					if(d[i][36]==0) d[i][36]=null; //workaround
-					if(d[i][18]==0) d[i][18]=null; //workaround
-				}
+//				for(var i=0;i<d.length;i++){
+//					if(d[i][36]==0) d[i][36]=null; //workaround
+//					if(d[i][18]==0) d[i][18]=null; //workaround
+//				}
 				ret.data.node=d;
 				d=null;
 				ret.data.comment=JSON.parse(gui.getData("lmGetAllCmiCommentByClientAndObjId",[params.client,params.obj_id],false));
@@ -160,22 +142,13 @@
 		}
 
 		function saveRequest(data){
-			var additional_tables=data.node[0][41];
-			var storeNode=[];
-			storeNode[0]=params.client;
-			storeNode[1]=params.obj_id;
-			for(i=0;i<41;i++) {
-//				if(storeNode[i+2]==null) alert(i+2);
-				storeNode[i+2]=data.node[0][i];
-			}
-			storeNode[43]=data.p;
-			storeNode[44]="";//now
-			storeNode[45]=additional_tables;
-			var dbResult = gui.setData("lmSetAllCmiNodeByClientAndObjId",storeNode);
-			//check data.lp_mode
-			var dbResult = gui.setData("lmSetStatusByClientAndObjId",[params.client, params.obj_id, data.now_global_status, data.saved_global_status, data.percentageCompleted, data.totalTimeCentisec, data.lp_mode]);
-			if (dbResult!=true) return "failure storing status";
-			return {"new_global_status":status};
+			var dbResult = gui.setData("setCMIData",[params.client, params.obj_id, data.p, data]);
+//			alert(dbResult);
+			return JSON.parse(dbResult);
+		}
+		function scormPlayerUnload(data) {
+		//alert(data);
+			var dbResult = gui.setData("scormPlayerUnload",[params.client, params.obj_id, data]);
 		}
 		window.addEventListener("load",initSom,true);
 		//]]>
