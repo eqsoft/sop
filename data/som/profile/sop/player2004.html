@@ -89,16 +89,12 @@
 			} else {
 				params = getObj(gui.getPlayerParams(window));
 				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
-//				alert(d[0].init_data);
 				var init_data=JSON.parse(d[0].init_data);
+				init_data.status.last_visited=d[0].last_visited;
+				init_data.status.saved_global_status=d[0].status;
 				init_data.package_url='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
-//'{"cp_url":"","cmi_url":"","store_url":"","get_adldata_url":"","set_adldata_url":"","adlact_url":"","specialpage_url":"","suspend_url":"","get_suspend_url":"","gobjective_url":"","get_gobjective_url":"","ping_url":"","scorm_player_unload_url":"","session_ping":0,"envEditor":0,"post_log_url":"","livelog_url":"","package_url":"\/data\/client0\/lm_data\/lm_205\/",
-//"debug":false,"debug_fields":[],"debug_fields_test":[],'+d[0].init_data+',
 				init_data.langstrings={"btnStart":"Start","btnExit":"Exit","btnExitAll":"Exit All","btnSuspendAll":"Suspend All","btnPrevious":"Previous","btnContinue":"Continue","btnhidetree":"Hide Tree","btnshowtree":"Show Tree","linkexpandTree":"Expand All","linkcollapseTree":"Collapse All"};
-//}');
 				init_cp_data=JSON.parse(d[0].resources);
-				//init_cp_data=d[0].resources;
-//				alert(init_cp_data);
 				d=null;
 				var ret={
 				"schema":{},
@@ -135,7 +131,6 @@
 		function initSom() {
 			somInitialized=true;
 			initPlayer();
-			//somInitialized=true;
 		}
 		function getObj(str) {
 			return JSON.parse(str);
@@ -143,12 +138,10 @@
 
 		function saveRequest(data){
 			var dbResult = gui.setData("setCMIData",[params.client, params.obj_id, data.p, data]);
-//			alert(dbResult);
 			return JSON.parse(dbResult);
 		}
 		function scormPlayerUnload(data) {
-		//alert(data);
-			var dbResult = gui.setData("scormPlayerUnload",[params.client, params.obj_id, data]);
+			if(data.last!="") var dbResult = gui.setData("scormPlayerUnload",[params.client, params.obj_id, data.last]);
 		}
 		window.addEventListener("load",initSom,true);
 		//]]>
