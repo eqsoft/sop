@@ -1,4 +1,4 @@
-// Build: 20131024183431 
+// Build: 20131031232628 
 /*
 	+-----------------------------------------------------------------------------+
 	| ILIAS open source                                                           |
@@ -2521,6 +2521,11 @@ ADLSequencer.prototype =
 				}
 			}
 		}
+	},
+
+	getCourseStatusByGlobalObjectives: function()
+	{
+		this.invokeRollup(this.mSeqTree.getFirstCandidate(), null);
 	},
 
 	doOverallRollup: function (ioTarget, ioRollupSet)
@@ -13517,7 +13522,7 @@ function save()
 		result[k] = [];
 	}
 	// add shared objectives
-	//walk (sharedObjectives, "objective");
+	walk (sharedObjectives, "objective");
 	// add activities
 	walk (activities, 'node');
 
@@ -13545,12 +13550,12 @@ function save()
 
 
 	if (this.config.sequencing_enabled) {
-		// add shared objectives
-		walk (sharedObjectives, "objective");
+
+		msequencer.getCourseStatusByGlobalObjectives();
 
 		result["adl_seq_utilities"]=this.adl_seq_utilities;
-		if (toJSONString(saved_adl_seq_utilities) != toJSONString(this.adl_seq_utilities)) {
-			saved_adl_seq_utilities = this.adl_seq_utilities;
+		if (saved_adl_seq_utilities != toJSONString(this.adl_seq_utilities)) {
+			saved_adl_seq_utilities = toJSONString(this.adl_seq_utilities);
 			result["changed_seq_utilities"]=1;
 		}
 		else {
@@ -13568,9 +13573,14 @@ function save()
 		else if (config.status.scos.length == i_numCompleted) now_global_status = LP_STATUS_COMPLETED_NUM;
 		percentageCompleted=Math.round(i_numCompleted*100/config.status.scos.length);
 	}
-//	else {//deactivated = 0 or scorm=12 (global objectives do with php)
-//		now_global_status="";
-//	}
+	else if (config.status.lp_mode == 12) {
+		var measure=this.adl_seq_utilities.status[this.config.course_id][this.config.learner_id]["measure"];
+		var satisfied=this.adl_seq_utilities.status[this.config.course_id][this.config.learner_id]["satisfied"];
+		var completed=this.adl_seq_utilities.status[this.config.course_id][this.config.learner_id]["completed"];
+		if (completed=="completed" || satisfied=="satisfied") now_global_status = LP_STATUS_COMPLETED_NUM;
+		if (satisfied=="notSatisfied") now_global_status = LP_STATUS_FAILED_NUM;
+		if(!isNaN(measure)) percentageCompleted=Math.round(measure*100);
+	}
 	if (b_statusUpdate == false) now_global_status=config.status.saved_global_status;
 	result["saved_global_status"]=config.status.saved_global_status;
 	result["now_global_status"]=now_global_status;
@@ -13912,7 +13922,7 @@ function onItemDeliver(item, wasSuspendAll) // onDeliver called from sequencing 
 		
 		// add some global values for all sco's in package
 		data.cmi.learner_name = globalAct.learner_name;
-		data.cmi.learner_id = globalAct.learner_id;
+		data.cmi.learner_id = this.config.cmi_learner_id;
 		data.cmi.cp_node_id = item.foreignId;
 		data.scoid = item.id;
 		data.cmi.session_time = undefined;
@@ -14818,7 +14828,7 @@ var DISABLED_ACTIONS = /^disabled$/i;
 var state = WAITING; 
 var SCOEntryedAct = null;
 
-var saved_adl_seq_utilities = {"satisfied":{},"measure":{},"status":{}};
+var saved_adl_seq_utilities = "";//{"satisfied":{},"measure":{},"status":{}};
 var saved_result;
 var saved={
 	"comment":{"data":[],"checkplus":8},
@@ -15059,8 +15069,8 @@ function Runtime(cmiItem, onCommit, onTerminate, onDebug)
 				if (config.auto_suspend==true) cmiItem.cmi.exit="suspend";
 				//store correct status in DB; returnValue1 because of IE;
 				var statusValues=syncCMIADLTree();
-				statusHandler(cmiItem.scoid,"completion",statusValues[0]);
-				statusHandler(cmiItem.scoid,"success",statusValues[1]);
+				//statusHandler(cmiItem.scoid,"completion",statusValues[0]);
+				//statusHandler(cmiItem.scoid,"success",statusValues[1]);
 				var returnValue = onCommit(cmiItem);
 				if (returnValue && saveOnCommit == true) {
 					if (config.sequencing_enabled) {
