@@ -1,9 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" id="scormplayer">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>SCORM Offline Player</title>
 	<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
 	<script type="text/javascript" src="../Modules/ScormAicc/scripts/SOP12API.js"></script>
@@ -23,16 +22,22 @@ body{
 	width:230px;
 	position:absolute;
 	float:left;
-	top:30px;
+	top:0px;
 	bottom:0;
+	font-family:Arial,sans-serif;
+	font-size:90%;
 }
-div.dragbar{
+#leftView a{
+	text-decoration: none;
+	cursor: pointer;
+}
+#dragbar{
 	background-color:#D0D0D0;
 	z-index:8;
 	width:2px;
 	cursor:col-resize;
 	position:absolute;
-	top:30px;
+	top:0px;
 	bottom:0px;
 	left:230px;
 }
@@ -40,7 +45,7 @@ div.dragbar{
 	float:right;
 	position:absolute;
 	right:0;
-	top:30px;
+	top:0px;
 	bottom:0px;
 	left:232px;
 }
@@ -48,11 +53,6 @@ div.dragbar{
 </head>
 <body>
 	<div id="zmove"></div>
-	<div id="toolbar">
-		<a href="#" onclick="gui.openSomHome();return false;">SOM-Home</a> 
-		<span id="lmTitle"></span> 
-		Status: <span id="lmStatus"></span>
-	</div>
 	<div id="mainTable">
 		<div id="leftView">
 			<div id="treeView"></div>
@@ -68,8 +68,9 @@ div.dragbar{
 	<script type="text/javascript">
 		somInitialized=false;
 		IliasScormVars={};
-		IliasScormData={};
+		IliasScormData=[];
 		IliasScormResources=[];
+		IliasScormTree=[];
 		var SOP=true;
 		var API;
 		var params;
@@ -79,26 +80,25 @@ div.dragbar{
 				setTimeout("initPlayer()",100);
 			} else {
 				params = getObj(gui.getPlayerParams(window));
-				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjId",[params.client,params.obj_id],true));
-				document.getElementById("lmTitle").innerHTML=d[0].title;
-				document.getElementById("lmStatus").innerHTML=d[0].status;
 				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
 				if(d[0].init_data && d[0].init_data!="")
 				{
 					IliasScormVars=JSON.parse(d[0].init_data);
-					IliasScormData={};
-					if (d[0].user_data !="") JSON.parse(d[0].user_data);
+					IliasScormVars.launchId=d[0].last_visited;
+					IliasScormVars.status.saved_global_status=d[0].status;
+					IliasScormVars.dataDirectory='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
 					IliasScormResources=JSON.parse(d[0].resources);
 					if (IliasScormResources.length==1){
 						document.getElementById("leftView").style.width="0";
 						document.getElementById("dragbar").style.left="0";
 						document.getElementById("tdResource").style.left="0";
 					}
-					IliasScormVars.b_debug=true;
 					if (IliasScormVars.b_debug==true) {
 						document.getElementsByName("sahs_content")[0].style.height="70%";
 						document.getElementsByName("logframe")[0].style.height="30%";
 					}
+					IliasScormTree = JSON.parse(d[0].scorm_tree);
+					IliasScormData = JSON.parse(gui.getData("getScormTracking",[params.client,params.obj_id],false));
 					API=new iliasApi();
 				} else {
 					document.getElementById("tdResource").innerHTML="error reading data";
@@ -109,14 +109,18 @@ div.dragbar{
 		function initSom() {
 			somInitialized=true;
 			initPlayer();
-			//somInitialized=true;
 		}
 		function getObj(str) {
 			return JSON.parse(str);
 		}
+		function saveRequest(data){
+			var dbResult = gui.setData("setSCORM12data",[params.client, params.obj_id, data]);
+			return dbResult;
+		}
+		function scormPlayerUnload(data) {
+			if(data.last!="") var dbResult = gui.setData("scormPlayerUnload",[params.client, params.obj_id, data.last]);
+		}
 		window.addEventListener("load",initSom,true);
-		//window.addEventListener("load",initSom,true);
-		//initPlayer();
 	</script>
 </body>
 </html>
