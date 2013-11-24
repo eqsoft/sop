@@ -1,21 +1,21 @@
 {
   "name": "sop",
-  "fullName": "ILIAS SCORM-Offline-Player",
+  "fullName": "ILIAS SCORM Offline Player",
   "id": "f23bee90-c208-4dba-b923-173940c32bd9",
-  "description": "ILIAS SCORM Offline Player",
+  "description": "Allows to run SCORM 1.2 and 2004 modules offline incl. usertracking.",
   "author": "schneider@hrz.uni-marburg.de, kohnle@internetlehrer-gmbh.de",
   "license": "MPL 2.0",
-  "version": "0.2",
+  "version": "1.0",
   "preferences" : 
 	[{
-		"description": "Autostart SCORM-Offline-Manager",
+		"description": "Autostart SCORM Offline Manager",
 		"type": "bool",
 		"name": "prefAutoStart",
 		"value": true,
 		"title": "Autostart SOM"
 	},
 	{
-		"description": "SCORM-Offline-Manager Skin",
+		"description": "SCORM Offline Manager Skin",
 		"type": "menulist",
 		"name": "prefSkin",
 		"value": "frm",
@@ -32,14 +32,14 @@
 		    ]
 	},
 	{
-		"description": "Start SCORM-Offline-Manager",
+		"description": "Start SCORM Offline Manager",
 		"type": "control",
 		"label": "Start SOM",
 		"name": "prefStartSOM",
 		"title": "Start SOM"
 	},
 	{
-		"description": "Stop SCORM-Offline-Manager",
+		"description": "Stop SCORM Offline Manager",
 		"type": "control",
 		"label": "Stop SOM",
 		"name": "prefStopSOM",
@@ -51,5 +51,12 @@
 		"label": "Reset to Factory Data",
 		"name": "prefResetSOM",
 		"title": "Reset SOM"
+	},
+	{
+		"description": "Start webserver asynchronously (experimemtal)",
+		"type": "bool",
+		"name": "prefAsyncWebserver",
+		"value": true,
+		"title": "Asynchronous Webserver"
 	}]
 }
