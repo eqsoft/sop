@@ -87,6 +87,7 @@
 			if (somInitialized!=true){
 				setTimeout("initPlayer()",100);
 			} else {
+				initButtons();
 				params = getObj(gui.getPlayerParams(window));
 				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
 				var init_data=JSON.parse(d[0].init_data);
@@ -94,7 +95,21 @@
 				init_data.status.saved_global_status=d[0].status;
 				init_data.package_url='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
 				init_data.specialpage_url='./specialPage.html?message=';
-				init_data.langstrings={"btnStart":"Start","btnExit":"Exit","btnExitAll":"Exit All","btnSuspendAll":"Suspend All","btnPrevious":"Previous","btnContinue":"Continue","btnhidetree":"Hide Tree","btnshowtree":"Show Tree","linkexpandTree":"Expand All","linkcollapseTree":"Collapse All"};
+				//init_data.langstrings = gui.getLocStr;
+				
+				init_data.langstrings={
+					"btnStart":gui.getLocStr("btnStart"),
+					"btnExit":gui.getLocStr("btnExit"),
+					"btnExitAll":gui.getLocStr("btnExitAll"),
+					"btnSuspendAll":gui.getLocStr("btnSuspendAll"),
+					"btnPrevious":gui.getLocStr("btnPrevious"),
+					"btnContinue":gui.getLocStr("btnContinue"),
+					"btnhidetree":gui.getLocStr("btnhidetree"),
+					"btnshowtree":gui.getLocStr("btnshowtree"),
+					"linkexpandTree":gui.getLocStr("linkexpandTree"),
+					"linkcollapseTree":gui.getLocStr("linkcollapseTree")
+					};
+				
 				init_cp_data=JSON.parse(d[0].resources);
 				d=null;
 				var ret={
@@ -129,6 +144,46 @@
 				scorm_init(init_data);
 			}
 		}
+		
+		function initButtons() {
+			document.getElementById("treeToggle").innerHTML = gui.getLocStr("btnhidetree");
+			document.getElementById("navStart").innerHTML = gui.getLocStr("btnStart");
+			document.getElementById("navExit").innerHTML = gui.getLocStr("btnExit");
+			document.getElementById("navExitAll").innerHTML = gui.getLocStr("btnExitAll");
+			document.getElementById("navSuspendAll").innerHTML = gui.getLocStr("btnSuspendAll");
+			document.getElementById("navPrevious").innerHTML = "&lt; " + gui.getLocStr("btnPrevious");
+			document.getElementById("navContinue").innerHTML = gui.getLocStr("btnContinue") + " &gt;";
+		}
+		
+		function initSpecialPage(w) {
+			if (!somInitialized || !gui) {
+				return;
+			}
+			var elSpecialPage = w.document.getElementById("txtSpecialPage");
+			var elCloseWindow = w.document.getElementById("txtCloseWindow");
+			var lngPages = {
+			"_COURSECOMPLETE_"	:		"seq_coursecomplete",
+			"_ENDSESSION_"		: 		"seq_endsession",
+			"_SEQBLOCKED_"		: 		"seq_blocked",
+			"_NOTHING_"		: 		"seq_nothing",
+			"_ERROR_"		:  		"seq_error",
+			"_DEADLOCK_"		:		"seq_deadlock",
+			"_INVALIDNAVREQ_"	:		"seq_invalidnavreq",
+			"_SEQABANDON_"		:		"seq_abandon",
+			"_SEQABANDONALL_"	:		"seq_abandonall",
+			"_TOC_"			:		"seq_toc"
+			}
+			var params = getObj(gui.getPlayerParams(w));
+			var page = params.page;
+			elSpecialPage.innerHTML = gui.getLocStr(lngPages[page]);
+			if (page!="_TOC_" && page!="_SEQABANDON_" && page!="_SEQABANDONALL_" ) {
+				elCloseWindow.innerHTML = gui.getLocStr("seq_close");
+			} 
+			else {
+				elCloseWindow.innerHTML = "";
+			}
+		}
+		
 		function initSom() {
 			somInitialized=true;
 			initPlayer();
