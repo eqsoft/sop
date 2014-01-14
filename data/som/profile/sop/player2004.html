@@ -95,7 +95,7 @@
 				init_data.status.saved_global_status=d[0].status;
 				init_data.package_url='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
 				init_data.specialpage_url='./specialPage.html?message=';
-				//init_data.langstrings = gui.getLocStr;
+				init_adlact_data=JSON.parse(d[0].adlact_data);
 				
 				init_data.langstrings={
 					"btnStart":gui.getLocStr("btnStart"),
@@ -125,12 +125,7 @@
 				};
 				ret.schema={"package":["user_id","learner_name","slm_id","mode","credit"],"node":["accesscount","accessduration","accessed","activityAbsoluteDuration","activityAttemptCount","activityExperiencedDuration","activityProgressStatus","attemptAbsoluteDuration","attemptCompletionAmount","attemptCompletionStatus","attemptExperiencedDuration","attemptProgressStatus","audio_captioning","audio_level","availableChildren","cmi_node_id","completion","completion_status","completion_threshold","cp_node_id","created","credit","delivery_speed","entry","exit","language","launch_data","learner_name","location","max","min","mode","modified","progress_measure","raw","scaled","scaled_passing_score","session_time","success_status","suspend_data","total_time","user_id"],"comment":["cmi_comment_id","cmi_node_id","comment","timestamp","location","sourceIsLMS"],"correct_response":["cmi_correct_response_id","cmi_interaction_id","pattern"],"interaction":["cmi_interaction_id","cmi_node_id","description","id","latency","learner_response","result","timestamp","type","weighting"],"objective":["cmi_interaction_id","cmi_node_id","cmi_objective_id","completion_status","description","id","max","min","raw","scaled","progress_measure","success_status","scope"]};
 
-//				ret.data.package=[["6","root user","205","normal","credit"]];//JSON.parse(gui.getData("lmGetAllCmiPackageByClientAndObjId",[params.client,params.obj_id],false));
 				d=JSON.parse(gui.getData("lmGetAllCmiNodeByClientAndObjId",[params.client,params.obj_id],false));
-//				for(var i=0;i<d.length;i++){
-//					if(d[i][36]==0) d[i][36]=null; //workaround
-//					if(d[i][18]==0) d[i][18]=null; //workaround
-//				}
 				ret.data.node=d;
 				d=null;
 				ret.data.comment=JSON.parse(gui.getData("lmGetAllCmiCommentByClientAndObjId",[params.client,params.obj_id],false));
@@ -139,7 +134,6 @@
 				ret.data.objective=JSON.parse(gui.getData("lmGetAllCmiObjectiveByClientAndObjId",[params.client,params.obj_id],false));
 				init_cmi_data=ret;
 				ret=null;
-				init_adlact_data={};
 				init_globalobj_data={};
 				scorm_init(init_data);
 			}

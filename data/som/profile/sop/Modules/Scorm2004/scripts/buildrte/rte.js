@@ -1,4 +1,4 @@
-// Build: 20131031232628 
+// Build: 2014113161648 
 /*
 	+-----------------------------------------------------------------------------+
 	| ILIAS open source                                                           |
@@ -12602,9 +12602,9 @@ function updateControls(controlState)
 function setResource(id, url, base) 
 {
 	if (url.substring(0,4) != "http") url= base + url;
-	
-	if (!top.frames[RESOURCE_NAME])
-	{
+//IE11 problem
+	// if (!top.frames[RESOURCE_NAME])
+	// {
 		var elm = window.document.getElementById(RESOURCE_PARENT);
 		if (!elm) 
 		{
@@ -12618,11 +12618,11 @@ function setResource(id, url, base)
 		var resContainer = window.document.getElementById("res");
 		resContainer.src=url;
 		resContainer.name=RESOURCE_NAME;
-	} 
-	else 
-	{			
-		open(url, RESOURCE_NAME);
-	} 
+	// } 
+	// else 
+	// {			
+		// open(url, RESOURCE_NAME);
+	// } 
 	
 	if (guiItem) 
 	{
@@ -13887,7 +13887,7 @@ function onItemDeliver(item, wasSuspendAll) // onDeliver called from sequencing 
 
 		// get data in cmi-1.3 format
 		var data = getAPI(item.foreignId);
-		if (this.config.sequencing_enabled) loadSharedData(item.cp_node_id);
+		if (this.config.fourth_edition) loadSharedData(item.cp_node_id);
 		
 		// add ADL Request namespace data
 		data.adl = {nav : {request_valid: {}}};
@@ -13930,6 +13930,8 @@ function onItemDeliver(item, wasSuspendAll) // onDeliver called from sequencing 
 		data.cmi.launch_data = item.dataFromLMS;
 		data.cmi.time_limit_action = item.timeLimitAction;
 		data.cmi.max_time_allowed = item.attemptAbsoluteDurationLimit;
+		
+		data.cmi.entry="";
 		
 		//Add learner prefs (since the map stuff is completely nuts and doesn't work right)
 		data.cmi.learner_preference = {
@@ -13982,23 +13984,22 @@ function onItemDeliver(item, wasSuspendAll) // onDeliver called from sequencing 
 		if (data.cmi.mode == "review") {
 			data.cmi.credit = "no-credit";
 			item.options.notracking = true;//UK: no better score for example!
+		} else {
+
+			if (item.exit!="suspend") {
+				//provide us with a clean data set - UK not really clean!
+				//data.cmi=Runtime.models.cmi;
+				//explicitly set some entries
+				data.cmi.completion_status="unknown";
+				data.cmi.success_status="unknown";
+				data.cmi.entry="ab-initio";
+				data.cmi.suspend_data = null;
+				data.cmi.total_time="PT0H0M0S"; //UK: not in specification but required by test suite
+			} 
+
+			//set resume manually if suspendALL happened before
+			if (item.exit=="suspend" || wasSuspendAll) data.cmi.entry="resume";
 		}
-
-		if (item.exit!="suspend") {
-			//provide us with a clean data set - UK not really clean! goal: get out of database only total_time if exit!=suspend
-			//data.cmi=Runtime.models.cmi;
-			//explicitly set some entries
-			data.cmi.completion_status="unknown";
-			data.cmi.success_status="unknown";
-			data.cmi.entry="ab-initio";
-			data.cmi.suspend_data = null;
-			//data.cmi.total_time="PT0H0M0S"; //UK: not in specification
-		} 
-
-		//set resume manually if suspendALL happened before
-		//alert(wasSuspendAll);
-		if (item.exit=="suspend" || wasSuspendAll) data.cmi.entry="resume";
-		else data.cmi.entry="";
 
 		//RTE-4-45: If there are additional learner sessions within a learner attempt, the cmi.exit becomes uninitialized (i.e., reinitialized to its default value of (“”) - empty characterstring) at the beginning of each additional learner session within the learner attempt.
 		data.cmi.exit="";
@@ -15073,7 +15074,7 @@ function Runtime(cmiItem, onCommit, onTerminate, onDebug)
 				//statusHandler(cmiItem.scoid,"success",statusValues[1]);
 				var returnValue = onCommit(cmiItem);
 				if (returnValue && saveOnCommit == true) {
-					if (config.sequencing_enabled) {
+					if (config.fourth_edition) {
 						var sgo=saveSharedData(cmiItem);
 					}
 					returnValue = save();
