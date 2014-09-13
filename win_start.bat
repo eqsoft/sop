@@ -1,2 +1,2 @@
-cfx run -b "bin\win\24\firefox.exe"
+cfx run -b "bin\win\32\firefox.exe"
 
