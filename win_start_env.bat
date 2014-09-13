@@ -1,2 +1,2 @@
-start addon-sdk-1.14\bin\activate.bat
+start addon-sdk-1.17\bin\activate.bat
 
