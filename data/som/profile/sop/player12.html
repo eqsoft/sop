@@ -74,42 +74,52 @@ body{
 		var SOP=true;
 		var API;
 		var params;
-
+		var maxInitTries = 20;
+		var tries=0;
+		
 		function initPlayer() {
-			if (somInitialized!=true){
-				setTimeout("initPlayer()",100);
-			} else {
-				params = getObj(gui.getPlayerParams(window));
-				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
-				if(d[0].init_data && d[0].init_data!="")
-				{
-					IliasScormVars=JSON.parse(d[0].init_data);
-					IliasScormVars.launchId=d[0].last_visited;
-					IliasScormVars.status.saved_global_status=d[0].status;
-					IliasScormVars.dataDirectory='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
-					IliasScormResources=JSON.parse(d[0].resources);
-					if (IliasScormResources.length==1){
-						document.getElementById("leftView").style.width="0";
-						document.getElementById("dragbar").style.left="0";
-						document.getElementById("tdResource").style.left="0";
-					}
-					if (IliasScormVars.b_debug==true) {
-						document.getElementsByName("sahs_content")[0].style.height="70%";
-						document.getElementsByName("logframe")[0].style.height="30%";
-					}
-					IliasScormTree = JSON.parse(d[0].scorm_tree);
-					IliasScormData = JSON.parse(gui.getData("getScormTracking",[params.client,params.obj_id],false));
-					API=new iliasApi();
-				} else {
-					document.getElementById("tdResource").innerHTML="error reading data";
+			params = getObj(gui.getPlayerParams(window));
+			var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
+			if(d[0].init_data && d[0].init_data!="")
+			{
+				IliasScormVars=JSON.parse(d[0].init_data);
+				IliasScormVars.launchId=d[0].last_visited;
+				IliasScormVars.status.saved_global_status=d[0].status;
+				IliasScormVars.dataDirectory='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
+				IliasScormResources=JSON.parse(d[0].resources);
+				if (IliasScormResources.length==1){
+					document.getElementById("leftView").style.width="0";
+					document.getElementById("dragbar").style.left="0";
+					document.getElementById("tdResource").style.left="0";
 				}
+				if (IliasScormVars.b_debug==true) {
+					document.getElementsByName("sahs_content")[0].style.height="70%";
+					document.getElementsByName("logframe")[0].style.height="30%";
+				}
+				IliasScormTree = JSON.parse(d[0].scorm_tree);
+				IliasScormData = JSON.parse(gui.getData("getScormTracking",[params.client,params.obj_id],false));
+				API=new iliasApi();
+			} else {
+				document.getElementById("tdResource").innerHTML="error reading data";
 			}
 		}
 
 		function initSom() {
-			somInitialized=true;
-			initPlayer();
+			if (typeof gui != "object") {
+				if (tries < maxInitTries) {
+					tries++;
+					setTimeout("initSom()", 100);
+					return;
+				}
+				else {
+					alert("could not initialize global objects!");
+				}
+			}
+			else {
+				initPlayer();
+			}
 		}
+		
 		function getObj(str) {
 			return JSON.parse(str);
 		}

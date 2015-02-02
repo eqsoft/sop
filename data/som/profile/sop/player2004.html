@@ -83,60 +83,59 @@
 		somInitialized=false;
 		var SOP = true;
 		var params;
+		var maxInitTries = 20;
+		var tries=0;
+		
 		function initPlayer() {
-			if (somInitialized!=true){
-				setTimeout("initPlayer()",100);
-			} else {
-				initButtons();
-				params = getObj(gui.getPlayerParams(window));
-				var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
-				var init_data=JSON.parse(d[0].init_data);
-				init_data.status.last_visited=d[0].last_visited;
-				init_data.status.saved_global_status=d[0].status;
-				init_data.package_url='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
-				init_data.specialpage_url='./specialPage.html?message=';
-				init_adlact_data=JSON.parse(d[0].adlact_data);
-				
-				init_data.langstrings={
-					"btnStart":gui.getLocStr("btnStart"),
-					"btnExit":gui.getLocStr("btnExit"),
-					"btnExitAll":gui.getLocStr("btnExitAll"),
-					"btnSuspendAll":gui.getLocStr("btnSuspendAll"),
-					"btnPrevious":gui.getLocStr("btnPrevious"),
-					"btnContinue":gui.getLocStr("btnContinue"),
-					"btnhidetree":gui.getLocStr("btnhidetree"),
-					"btnshowtree":gui.getLocStr("btnshowtree"),
-					"linkexpandTree":gui.getLocStr("linkexpandTree"),
-					"linkcollapseTree":gui.getLocStr("linkcollapseTree")
-					};
-				
-				init_cp_data=JSON.parse(d[0].resources);
-				d=null;
-				var ret={
-				"schema":{},
-				"data":{
-					"package":[],
-					"node":[],
-					"comment":[],
-					"correct_response":[],
-					"interaction":[],
-					"objective":[]
-					}
+			initButtons();
+			params = getObj(gui.getPlayerParams(window));
+			var d = JSON.parse(gui.getData("lmGetAllByClientAndObjIdAtInitOfPlayer",[params.client,params.obj_id],true));
+			var init_data=JSON.parse(d[0].init_data);
+			init_data.status.last_visited=d[0].last_visited;
+			init_data.status.saved_global_status=d[0].status;
+			init_data.package_url='/data/'+params.client+'/lm_data/lm_'+params.obj_id+'/';
+			init_data.specialpage_url='./specialPage.html?message=';
+			init_adlact_data=JSON.parse(d[0].adlact_data);
+			
+			init_data.langstrings={
+				"btnStart":gui.getLocStr("btnStart"),
+				"btnExit":gui.getLocStr("btnExit"),
+				"btnExitAll":gui.getLocStr("btnExitAll"),
+				"btnSuspendAll":gui.getLocStr("btnSuspendAll"),
+				"btnPrevious":gui.getLocStr("btnPrevious"),
+				"btnContinue":gui.getLocStr("btnContinue"),
+				"btnhidetree":gui.getLocStr("btnhidetree"),
+				"btnshowtree":gui.getLocStr("btnshowtree"),
+				"linkexpandTree":gui.getLocStr("linkexpandTree"),
+				"linkcollapseTree":gui.getLocStr("linkcollapseTree")
 				};
-				ret.schema={"package":["user_id","learner_name","slm_id","mode","credit"],"node":["accesscount","accessduration","accessed","activityAbsoluteDuration","activityAttemptCount","activityExperiencedDuration","activityProgressStatus","attemptAbsoluteDuration","attemptCompletionAmount","attemptCompletionStatus","attemptExperiencedDuration","attemptProgressStatus","audio_captioning","audio_level","availableChildren","cmi_node_id","completion","completion_status","completion_threshold","cp_node_id","created","credit","delivery_speed","entry","exit","language","launch_data","learner_name","location","max","min","mode","modified","progress_measure","raw","scaled","scaled_passing_score","session_time","success_status","suspend_data","total_time","user_id"],"comment":["cmi_comment_id","cmi_node_id","comment","timestamp","location","sourceIsLMS"],"correct_response":["cmi_correct_response_id","cmi_interaction_id","pattern"],"interaction":["cmi_interaction_id","cmi_node_id","description","id","latency","learner_response","result","timestamp","type","weighting"],"objective":["cmi_interaction_id","cmi_node_id","cmi_objective_id","completion_status","description","id","max","min","raw","scaled","progress_measure","success_status","scope"]};
+			
+			init_cp_data=JSON.parse(d[0].resources);
+			d=null;
+			var ret={
+			"schema":{},
+			"data":{
+				"package":[],
+				"node":[],
+				"comment":[],
+				"correct_response":[],
+				"interaction":[],
+				"objective":[]
+				}
+			};
+			ret.schema={"package":["user_id","learner_name","slm_id","mode","credit"],"node":["accesscount","accessduration","accessed","activityAbsoluteDuration","activityAttemptCount","activityExperiencedDuration","activityProgressStatus","attemptAbsoluteDuration","attemptCompletionAmount","attemptCompletionStatus","attemptExperiencedDuration","attemptProgressStatus","audio_captioning","audio_level","availableChildren","cmi_node_id","completion","completion_status","completion_threshold","cp_node_id","created","credit","delivery_speed","entry","exit","language","launch_data","learner_name","location","max","min","mode","modified","progress_measure","raw","scaled","scaled_passing_score","session_time","success_status","suspend_data","total_time","user_id"],"comment":["cmi_comment_id","cmi_node_id","comment","timestamp","location","sourceIsLMS"],"correct_response":["cmi_correct_response_id","cmi_interaction_id","pattern"],"interaction":["cmi_interaction_id","cmi_node_id","description","id","latency","learner_response","result","timestamp","type","weighting"],"objective":["cmi_interaction_id","cmi_node_id","cmi_objective_id","completion_status","description","id","max","min","raw","scaled","progress_measure","success_status","scope"]};
 
-				d=JSON.parse(gui.getData("lmGetAllCmiNodeByClientAndObjId",[params.client,params.obj_id],false));
-				ret.data.node=d;
-				d=null;
-				ret.data.comment=JSON.parse(gui.getData("lmGetAllCmiCommentByClientAndObjId",[params.client,params.obj_id],false));
-				ret.data.correct_response=JSON.parse(gui.getData("lmGetAllCmiCorrectResponseByClientAndObjId",[params.client,params.obj_id],false));
-				ret.data.interaction=JSON.parse(gui.getData("lmGetAllCmiInteractionByClientAndObjId",[params.client,params.obj_id],false));
-				ret.data.objective=JSON.parse(gui.getData("lmGetAllCmiObjectiveByClientAndObjId",[params.client,params.obj_id],false));
-				init_cmi_data=ret;
-				ret=null;
-				init_globalobj_data={};
-				scorm_init(init_data);
-			}
+			d=JSON.parse(gui.getData("lmGetAllCmiNodeByClientAndObjId",[params.client,params.obj_id],false));
+			ret.data.node=d;
+			d=null;
+			ret.data.comment=JSON.parse(gui.getData("lmGetAllCmiCommentByClientAndObjId",[params.client,params.obj_id],false));
+			ret.data.correct_response=JSON.parse(gui.getData("lmGetAllCmiCorrectResponseByClientAndObjId",[params.client,params.obj_id],false));
+			ret.data.interaction=JSON.parse(gui.getData("lmGetAllCmiInteractionByClientAndObjId",[params.client,params.obj_id],false));
+			ret.data.objective=JSON.parse(gui.getData("lmGetAllCmiObjectiveByClientAndObjId",[params.client,params.obj_id],false));
+			init_cmi_data=ret;
+			ret=null;
+			init_globalobj_data={};
+			scorm_init(init_data);
 		}
 		
 		function initButtons() {
@@ -179,14 +178,26 @@
 		}
 		
 		function initSom() {
-			somInitialized=true;
-			initPlayer();
+			if (typeof gui != "object") {
+				if (tries < maxInitTries) {
+					tries++;
+					setTimeout("initSom()", 100);
+					return;
+				}
+				else {
+					alert("could not initialize global objects!");
+				}
+			}
+			else {
+				initPlayer();
+			}
 		}
+		
 		function getObj(str) {
 			return JSON.parse(str);
 		}
 
-		function saveRequest(data){
+		function saveRequest(data) {
 			var dbResult = gui.setData("setCMIData",[params.client, params.obj_id, data.p, data]);
 			return JSON.parse(dbResult);
 		}
