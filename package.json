@@ -5,7 +5,7 @@
   "description": "Allows to run SCORM 1.2 and 2004 modules offline incl. usertracking.",
   "author": "Stefan Schneider (eqsoftdev@gmail.com), Uwe Kohnle (kohnle@internetlehrer-gmbh.de)",
   "license": "GPL v2.0",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "preferences" : 
 	[{
 		"description": "Autostart SCORM Offline Manager",
