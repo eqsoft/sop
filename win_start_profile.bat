@@ -1,2 +1,2 @@
-cfx run -b "bin\win\32\firefox.exe" -p profile
+cfx run -b "bin\win\firefox\firefox.exe" -p profile
 
