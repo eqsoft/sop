@@ -3,9 +3,9 @@
   "fullName": "ILIAS SCORM Offline Player",
   "id": "f23bee90-c208-4dba-b923-173940c32bd9",
   "description": "Allows to run SCORM 1.2 and 2004 modules offline incl. usertracking.",
-  "author": "Stefan Schneider (eqsoftdev@gmail.com), Uwe Kohnle (kohnle@internetlehrer-gmbh.de)",
+  "author": "Stefan Schneider (schneider@hrz.uni-marburg.de), Uwe Kohnle (kohnle@internetlehrer-gmbh.de)",
   "license": "GPL v2.0",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "preferences" : 
 	[{
 		"description": "Autostart SCORM Offline Manager",
